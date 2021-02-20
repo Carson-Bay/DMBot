@@ -2,8 +2,8 @@ import os
 import discord
 import pickle
 from dotenv import load_dotenv
-from commands import embedMessage, ping, utils
 from classes import Guild, User, Session
+from commands import embedMessage, ping, utils, dice
 
 
 # Persistent data commands
@@ -74,7 +74,8 @@ commands = {
     "ping": ping.ping,
     "changeprefix": change_prefix,
     "createcahracter": create_character,
-    "session": session_manager
+    "session": session_manager,
+    "roll": dice.roll_dice
 }
 
 # Initializations
