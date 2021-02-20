@@ -7,7 +7,7 @@ from character import Character
 from commands import embedMessage, ping, utils, dice
 
 
-# Persistent data commands
+# ----------Persistent data commands----------
 async def change_prefix(ctx: discord.Message, client: discord.Client):
 
     args = utils.parse(ctx.content)
@@ -37,7 +37,7 @@ async def create_character(ctx: discord.Message, client: discord.Client):
         pickle.dump(user_characters, file)
 
 
-# Session commands
+# ----------Session commands----------
 async def session_manager(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
 
@@ -74,13 +74,62 @@ async def end_session(ctx: discord.Message, client: discord.Client):
     return await ctx.channel.send(embed=embedMessage.create("Session", "Your session has concluded", "blue"))
 
 
+# ----------Lookup Functions----------
+async def lookup(ctx: discord.Message, client: discord.Client):
+    args = utils.parse(ctx.content)
+    if len(args) != 3 and len(args) != 2:
+        return await ctx.channel.send(embed=embedMessage.create("Lookup Error", "Missing arguments", "red"))
+
+    if args[1] == "monster":
+        await monster_lookup(ctx, client)
+    else:
+        await ctx.channel.send(embed=embedMessage.create("Lookup Error", "Invalid lookup type", "red"))
+
+
+async def monster_lookup(ctx: discord.Message, client: discord.Client):
+    args = utils.parse(ctx.content)
+    if len(args) != 3:
+        return await ctx.channel.send(embed=embedMessage.create("Monster Error", "Incorrect Arguments\n"
+                                                                                 "*You may need to put quotes around monster name*", "red"))
+
+    # Load monsters
+    try:
+        with open("monsters.pickle", "rb") as file:
+            monsters = pickle.load(file)
+    except FileNotFoundError:
+        print("Monster file not found")
+
+    else:
+        for key in monsters.keys():
+            if key.lower() == args[2].lower():
+                monster_data = monsters[key]
+                return await ctx.channel.send(embed=embedMessage.create("{}".format(key),
+                                                                        "--------------------------\n"
+                                                                        "**Type**: {0}\n"
+                                                                        "**Size**: {1}\n"
+                                                                        "**Alignment**: {2}\n"
+                                                                        "**CR**: {3}\n"
+                                                                        "**XP**: {4}\n"
+                                                                        "**Tags**: {5}"
+                                                                        "".format(monster_data["type"],
+                                                                                  monster_data["size"],
+                                                                                  monster_data["align"],
+                                                                                  monster_data["cr"],
+                                                                                  monster_data["xp"],
+                                                                                  monster_data["tags"]), "green"))
+
+        return await ctx.channel.send(embed=embedMessage.create("Monster Error", "Monster {} not found\n"
+                                                                                 "*You may need to put quotes around monster name*".format(args[2]), "red"))
+
+
 # Dictionary of commands
 commands = {
     "ping": ping.ping,
     "changeprefix": change_prefix,
     "createcharacter": create_character,
     "session": session_manager,
-    "roll": dice.roll_dice
+    "roll": dice.roll_dice,
+    "lookup": lookup
 }
 
 # Initializations
