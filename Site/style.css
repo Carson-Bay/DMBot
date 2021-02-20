@@ -67,6 +67,7 @@ span.code {
 	border-style: solid;
 
 	font-family: 'Source Code Pro', monospace;
+	padding: 0px 4px 0px 4px;
 }
 
 #content {
