@@ -18,14 +18,44 @@
 		<nav>
 			<a class="hidden" href="index.html">Home</a>
 			<a class="hidden" href="documentation.html">Documentation</a>
-			<a class="hidden"
-				href="https://discord.com/api/oauth2/authorize?client_id=812519370869571605&permissions=8&scope=bot"
-				target="_blank">Get the Bot</a>
+			<a class="hidden" href="https://github.com/Carson-Bay/SacHacks-2021" target="_blank">Repository</a>
+			<a class="hidden" href="https://discord.com/api/oauth2/authorize?client_id=812519370869571605&permissions=8&scope=bot" target="_blank">Get the Bot</a>
 		</nav>
 	</header>
 
 	<div id="content">
-		
+		<h1>Commands</h1>
+		<hr />
+
+		<h2>Character Management</h2>
+		<ul style="text-align: start;">
+			<li><span class="code">$character create</span> - The bot will DM the sending user and guide them through character creation.</li>
+			<li><span class="code">$character list</span> - The bot will DM the sending user a list of their characters.</li>
+			<li><span class="code">$character show [name]</span> - Shows the specified character sheet.</li>
+			<li><span class="code">$character add [name] &#60;amount=1&#62;</span> - Adds <span class="code">amount</span> of an item/spell to the character's inventory.</li>
+			<li><span class="code">$character delete [name]</span> - Deletes the specified character. WARNING: This cannot be undone.</li>
+			<li><span class="code">$character revive [name]</span> - Revives the specified (dead) character.</li>
+		</ul>
+
+		<h2>Session Management</h2>
+		<ul style="text-align: start;">
+			<li><span class="code">$session start</span> - Starts a play session.</li>
+			<li><span class="code">$session add [name]</span> - Adds the specified character to the current session.</li>
+			<li><span class="code">$session end</span> - Ends the current session and removes all characters.</li>
+		</ul>
+
+		<h2>Combat Management</h2>
+		<ul style="text-align: start;">
+			<li><span class="code">$combat start</span> - Starts a combat encounter, rolls initiative for all characters in the session, and displays combat turn order.</li>
+			<li><span class="code">$combat damage [name]</span> - Damages the specified character in the session. If that character's HP is zero, the bot notifies that they are dead/knocked out.</li>
+			<li><span class="code">$combat end</span> - Ends the current combat encounter.</li>
+		</ul>
+
+		<h2>Utility Commands</h2>
+		<ul style="text-align: start;">
+			<li><span class="code">$roll [amount] d[sides]</span> - Rolls <span class="code">amount</span> of dice with the specified number of sides.</li>
+			<li><span class="code">$lookup [monster name]</span> - Looks up the specified monster's stats on <a href="https://www.dndbeyond.com/monsters" target="_blank">DnD Beyond</a>.</li>
+		</ul>
 	</div>
 
 	<footer>
