@@ -1,6 +1,9 @@
+a {
+	color: deeppink;
+}
+
 a.hidden {
 	text-decoration: none;
-	color: inherit;
 }
 
 a.hidden:hover {
@@ -38,8 +41,25 @@ html, body {
 	padding: 0;
 }
 
+div.person {
+	display: inline-block;
+	margin: 25px;
+}
+
+img.portrait {
+	border-radius: 50px;
+	object-fit: cover;
+
+	width: 100px;
+	height: 100px;
+}
+
+p {
+	text-align: justify;
+}
+
 #content {
 	margin: 10px 25% 10px 25%;
 	min-height: 100vh;
-	text-align: justify;
+	text-align: center;
 }
