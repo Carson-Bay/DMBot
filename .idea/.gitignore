@@ -1,0 +1,10 @@
+# Default ignored files
+/shelf/
+*.xml
+*.iml
+.env
+
+# Datasource local storage ignored files
+/../../../../../../../../../:\Users\cgbma\OneDrive\My Documents\Projects\GitHub\SacHacks-2021\.idea/dataSources/
+# Editor-based HTTP Client requests
+/httpRequests/
