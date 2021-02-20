@@ -23,6 +23,7 @@ div.person {
 	display: inline-block;
 	margin: 25px;
 	text-align: center;
+	width: 150px;
 }
 
 footer {
