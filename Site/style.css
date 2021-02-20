@@ -3,6 +3,7 @@ a {
 }
 
 a.hidden {
+	color: inherit;
 	text-decoration: none;
 }
 
