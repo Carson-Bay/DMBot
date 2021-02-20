@@ -1,5 +1,4 @@
 
-
 class Guild:
     def __init__(self, guild_id, prefix):
         self.id = guild_id

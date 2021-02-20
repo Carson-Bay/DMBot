@@ -2,13 +2,13 @@ import os
 import discord
 import pickle
 from dotenv import load_dotenv
-from commands import VCConnection, ping, _utils
-from guild_class import Guild
+from commands import ping, utils
+from classes import Guild
 
 
 async def change_prefix(ctx: discord.Message, client: discord.Client):
 
-    args = _utils._parse(ctx.content)
+    args = utils.parse(ctx.content)
 
     if len(args) != 2:
         return await ctx.channel.send("Prefix is not valid")
@@ -24,8 +24,6 @@ async def change_prefix(ctx: discord.Message, client: discord.Client):
 
 # Dictionary of commands
 commands = {
-    "join": VCConnection.join,
-    "leave": VCConnection.leave,
     "ping": ping.ping,
     "changeprefix": change_prefix
 }
