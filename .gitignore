@@ -12,3 +12,4 @@ prefix.pickle
 *.xml
 *.iml
 *.pyc
+/.vs/
