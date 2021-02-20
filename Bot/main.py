@@ -2,8 +2,8 @@ import os
 import discord
 import pickle
 from dotenv import load_dotenv
+from classes import Guild, User, Session
 from commands import embedMessage, ping, utils, dice
-from classes import Guild, User
 
 
 # Persistent data commands
@@ -27,22 +27,61 @@ async def create_character(ctx: discord.Message, client: discord.Client):
     dm_channel = await ctx.author.create_dm()
     await dm_channel.send("# START CHARACTER CREATION")
 
-    user_characters[ctx.author.id] = User(ctx.author.id, "#CHARACTER SHEET OBJECT")
+    user_characters[ctx.author.id] = User(ctx.author.id, ["#CHARACTER SHEET OBJECT"])
     with open("characters.pickle", "wb") as file:
         pickle.dump(user_characters, file)
+
+
+# Session commands
+async def session_manager(ctx: discord.Message, client: discord.Client):
+    args = utils.parse(ctx.content)
+
+    if args[1] == "start":
+        return await start_session(ctx, client)
+    elif args[1] == "end":
+        return await end_session(ctx, client)
+    else:
+        return await ctx.channel.send(embed=embedMessage.create("Session", "Not valid session command", "red"))
+
+
+async def start_session(ctx: discord.Message, client: discord.Client):
+    guild_id = ctx.guild.id
+    try:
+        if sessions[guild_id] is not None:
+            return await ctx.channel.send(embed=embedMessage.create("Session", "You already have a session in progress", "red"))
+    except KeyError:
+        pass
+
+    session = Session(guild_id)
+    sessions[guild_id] = session
+    return await ctx.channel.send(embed=embedMessage.create("Session", "Your session has begun", "blue"))
+
+
+async def end_session(ctx: discord.Message, client: discord.Client):
+    guild_id = ctx.guild.id
+    try:
+        if sessions[guild_id] is None:
+            return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+    except KeyError:
+        return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+
+    sessions[guild_id] = None
+    return await ctx.channel.send(embed=embedMessage.create("Session", "Your session has concluded", "blue"))
 
 
 # Dictionary of commands
 commands = {
     "ping": ping.ping,
     "changeprefix": change_prefix,
-    "me": utils.start_dm,
+    "createcahracter": create_character,
+    "session": session_manager,
     "roll": dice.roll_dice
 }
 
 # Initializations
 guilds = {}  # Dictionary of Server objects (Initialized at start)
 prefixes = {}  # Dictionary of prefixes keyed by server ID (pickled)
+sessions = {}  # Dictionary of active sessions keyed by server ID
 user_characters = {}  # Dictionary of character sheets keyed by user ID (pickled)
 
 default_prefix = "$"
