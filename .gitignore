@@ -7,6 +7,10 @@
 # Test pickle
 prefix.pickle
 
+# Data
+monsters.txt
+
+
 # IDE specific files
 /.idea/
 *.xml

@@ -84,6 +84,7 @@ commands = {
 guilds = {}  # Dictionary of Server objects (Initialized at start)
 prefixes = {}  # Dictionary of prefixes keyed by server ID (pickled)
 sessions = {}  # Dictionary of active sessions keyed by server ID
+monsters = {}  # Dictionary of monster data (pickled)
 user_characters = {}  # Dictionary of character sheets keyed by user ID (pickled)
 
 default_prefix = "$"
@@ -107,6 +108,13 @@ async def on_ready():
             user_characters = pickle.load(file)
     except FileNotFoundError:
         print("Character file not found")
+
+    # Load monsters
+    try:
+        with open("monsters.pickle", "rb") as file:
+            monsters = pickle.load(file)
+    except FileNotFoundError:
+        print("Monster file not found")
 
     for guild in client.guilds:
         try:
