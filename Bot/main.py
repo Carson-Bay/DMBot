@@ -3,9 +3,10 @@ import discord
 import pickle
 from dotenv import load_dotenv
 from commands import embedMessage, ping, utils
-from classes import Guild
+from classes import Guild, User
 
 
+# Persistent data commands
 async def change_prefix(ctx: discord.Message, client: discord.Client):
 
     args = utils.parse(ctx.content)
@@ -22,6 +23,15 @@ async def change_prefix(ctx: discord.Message, client: discord.Client):
         return await ctx.channel.send("Prefix has been changed to {}".format(args[1]))
 
 
+async def create_character(ctx: discord.Message, client: discord.Client):
+    dm_channel = await ctx.author.create_dm()
+    await dm_channel.send("# START CHARACTER CREATION")
+
+    user_characters[ctx.author.id] = User(ctx.author.id, "#CHARACTER SHEET OBJECT")
+    with open("characters.pickle", "wb") as file:
+        pickle.dump(user_characters, file)
+
+
 # Dictionary of commands
 commands = {
     "ping": ping.ping,
@@ -31,7 +41,8 @@ commands = {
 
 # Initializations
 guilds = {}  # Dictionary of Server objects (Initialized at start)
-prefixes = {}  # Dictionary of prefixes keyed by server ID
+prefixes = {}  # Dictionary of prefixes keyed by server ID (pickled)
+user_characters = {}  # Dictionary of character sheets keyed by user ID (pickled)
 
 default_prefix = "$"
 client = discord.Client()
@@ -46,8 +57,15 @@ async def on_ready():
         with open("prefix.pickle", "rb") as file:
             prefixes = pickle.load(file)
     except FileNotFoundError:
-        print("file not found")
-        prefixes = {}
+        print("Prefix file not found")
+
+    # Load User Characters
+    try:
+        with open("characters.pickle", "rb") as file:
+            user_characters = pickle.load(file)
+    except FileNotFoundError:
+        print("Character file not found")
+
     for guild in client.guilds:
         try:
             prefix = prefixes[guild.id]
@@ -68,7 +86,6 @@ async def on_message(ctx):
         prefix = guilds[ctx.guild.id].prefix
     except KeyError:
         prefix = default_prefix
-
 
     if ctx.content.startswith(prefix):
         command_string = ctx.content.split(" ")[0][len(prefix):].lower()
