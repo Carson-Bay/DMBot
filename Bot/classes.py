@@ -15,6 +15,9 @@ class User:
         self.id = user_id
         self.character = char_sheet
 
+    def add_char_sheet(self, sheet):
+        self.character.append(sheet)
+
 
 class Session:
     def __init__(self, guild_id):

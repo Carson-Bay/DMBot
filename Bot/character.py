@@ -1,3 +1,5 @@
+from enum import Enum
+
 class Attack:
 
     def __init__(self, name, atk_bonus, damage, other_descriptions):
@@ -28,16 +30,57 @@ class Dice:
             result.append(random.randint(1, sides))
         return result
 
+class CharacterCompletion(Enum):
+    START = 0
+    NAME = 1
+    RACE = 2
+    CLASS = 3
+    BACKGROUND = 4
+    ALIGNMENT = 5
+    LEVEL = 6
+    EXP = 7
+    STR = 8
+    DEX = 9
+    CON = 10
+    INT = 11
+    WIS = 12
+    CHA = 13
+    MODS = 14
+    SAVES = 15
+    INSPIRATION = 16
+    PROFICIENCY_MODIFIER = 17
+    SKILLS = 18
+    PROFICIENCIES = 19
+    LANGUAGES = 20
+    OTHER_PROFICIENCIES = 21
+    CURRENCY = 22
+    EQUIPMENT = 23
+    ATTACKS = 24
+    OTHER_ATTACKS = 24
+    ARMOR_CLASS = 25
+    INITIATIVE = 26
+    SPEED = 27
+    HIT_DICE = 28
+    MAX_HP = 29
+    HP = 30
+    DEATH_SAVES = 31
+    FEATURES = 32
+    PERSONALITY = 33
+    IDEALS = 34
+    BONDS = 35
+    FLAWS = 36
+    FINISH = 37
+
 class Character:
 
     def __init__(self):
         self.name = ""
-        self.chara_class = ""
-        self.level = 1
-        self.background = ""
-        self.player_name = ""
         self.race = ""
+        self.chara_class = ""
+        self.background = ""
         self.alignment = ""
+
+        self.level = 1
         self.exp = 0
 
         self.str = 0
@@ -62,9 +105,29 @@ class Character:
         self.inspiration = 0
         self.proficiency_bonus = 0
         self.passive_perception = 0
-
-        self.languages = {}
+        self.skills = {
+            "Acrobatics": 0
+            "Animal Handling": 0
+            "Arcana": 0
+            "Athletics": 0
+            "Deception": 0
+            "History": 0
+            "Insight": 0
+            "Intimidation": 0
+            "Investigation": 0
+            "Medicine": 0
+            "Nature": 0
+            "Perception": 0
+            "Performance": 0
+            "Persuasion": 0
+            "Religion": 0
+            "Sleight of Hand": 0
+            "Stealth": 0
+            "Survival": 0
+        }
+        
         self.proficiencies = {}
+        self.languages = {}
         self.other_proficiencies = {} # set of Description
 
         self.currency = [0, 0, 0, 0, 0] # CP, SP, EP, GP, PP
@@ -89,6 +152,8 @@ class Character:
         self.ideals = ""
         self.bonds = ""
         self.flaws = ""
+
+        self.creation_progress = CharacterCompletion.START
 
     def __str__(self):
         # Character sheet

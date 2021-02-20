@@ -3,6 +3,7 @@ import discord
 import pickle
 from dotenv import load_dotenv
 from classes import Guild, User, Session
+from character import Character
 from commands import embedMessage, ping, utils, dice
 
 
@@ -27,7 +28,8 @@ async def create_character(ctx: discord.Message, client: discord.Client):
     dm_channel = await ctx.author.create_dm()
     await dm_channel.send("# START CHARACTER CREATION")
 
-    user_characters[ctx.author.id] = User(ctx.author.id, ["#CHARACTER SHEET OBJECT"])
+    user_characters[ctx.author.id].add_char_sheet(Character())
+
     with open("characters.pickle", "wb") as file:
         pickle.dump(user_characters, file)
 
@@ -73,7 +75,7 @@ async def end_session(ctx: discord.Message, client: discord.Client):
 commands = {
     "ping": ping.ping,
     "changeprefix": change_prefix,
-    "createcahracter": create_character,
+    "createcharacter": create_character,
     "session": session_manager,
     "roll": dice.roll_dice
 }
