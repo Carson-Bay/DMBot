@@ -122,6 +122,10 @@ async def on_message(ctx):
         return
 
     if ctx.guild is None:
+        current_character = user_characters[ctx.author.id].character.pop()
+        output = current_character.continue_create(ctx.content)
+        dm_channel = await ctx.author.create_dm()
+        await dm_channel.send(output)
         return
 
     try:

@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import IntEnum
 
 class Attack:
 
@@ -30,7 +30,7 @@ class Dice:
             result.append(random.randint(1, sides))
         return result
 
-class CharacterCompletion(Enum):
+class CharacterCompletion(IntEnum):
     START = 0
     NAME = 1
     RACE = 2
@@ -154,6 +154,18 @@ class Character:
         self.flaws = ""
 
         self.creation_progress = CharacterCompletion.START
+        self.confirmation = False
+
+    def continue_create(self, input):
+        if self.creation_progress == CharacterCompletion.START:
+            if self.confirmation: # this is the confirmation message
+                if input == "y" || input == "yes":
+                    # proceed
+                else:
+                    # reject
+            else:
+
+                # send confirm message
 
     def __str__(self):
         # Character sheet
