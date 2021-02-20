@@ -11,3 +11,4 @@ prefix.pickle
 /.idea/
 *.xml
 *.iml
+*.pyc
