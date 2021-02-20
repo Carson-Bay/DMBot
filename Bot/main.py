@@ -1,13 +1,17 @@
 import os
 import discord
 from dotenv import load_dotenv
-from commands import *
+from commands import VC_connection
+
 
 # Dictionary of commands
-commands = {}
+commands = {
+    "join": VC_connection.join,
+    "leave": VC_connection.leave
+}
 
 # Change to check what prefix is stored in server object <--------------------
-prefix = "!"
+prefix = "$"
 
 client = discord.Client()
 
@@ -19,7 +23,7 @@ async def on_ready():
 
 @client.event
 async def on_message(ctx):
-    if ctx.author == ctx.user:
+    if ctx.author == client.user:
         return
 
     if ctx.content.startswith(prefix):
