@@ -25,7 +25,8 @@ async def change_prefix(ctx: discord.Message, client: discord.Client):
 # Dictionary of commands
 commands = {
     "ping": ping.ping,
-    "changeprefix": change_prefix
+    "changeprefix": change_prefix,
+    "me": utils.start_dm
 }
 
 guilds = {}  # Dictionary of Server objects (Initialized at start)
@@ -58,13 +59,17 @@ async def on_ready():
 
 @client.event
 async def on_message(ctx):
+    if ctx.author == client.user:
+        return
+
+    if ctx.guild is None:
+        return
+
     try:
         prefix = guilds[ctx.guild.id].prefix
     except KeyError:
         prefix = default_prefix
 
-    if ctx.author == client.user:
-        return
 
     if ctx.content.startswith(prefix):
         command_string = ctx.content.split(" ")[0][len(prefix):].lower()
