@@ -4,6 +4,9 @@
 # Token Files
 /Bot/.env
 
+# Test pickle
+prefix.pickle
+
 # IDE specific files
 /.idea/
 *.xml
