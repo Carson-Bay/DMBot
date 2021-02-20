@@ -19,6 +19,11 @@ body {
 	min-height: 100vh;
 }
 
+div.person {
+	display: inline-block;
+	margin: 25px;
+}
+
 footer {
 	background-color: #23272a;
 	min-height: 50px;
@@ -42,11 +47,6 @@ html, body {
 	padding: 0;
 }
 
-div.person {
-	display: inline-block;
-	margin: 25px;
-}
-
 img.portrait {
 	border-radius: 50px;
 	object-fit: cover;
@@ -57,6 +57,16 @@ img.portrait {
 
 p {
 	text-align: justify;
+}
+
+span.code {
+	background-color: #23272a;
+	border-color: black;
+	border-width: 1px;
+	border-radius: 4px;
+	border-style: solid;
+
+	font-family: 'Source Code Pro', monospace;
 }
 
 #content {
