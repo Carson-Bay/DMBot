@@ -1,3 +1,8 @@
+a.hidden {
+	text-decoration: none;
+	color: inherit;
+}
+
 body {
 	background-color: #2c2f33;
 	color: #ffffff;
