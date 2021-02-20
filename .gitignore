@@ -1,0 +1,10 @@
+# Default ignored files
+/shelf/
+
+# Token Files
+/Bot/.env
+
+# IDE specific files
+/.idea/
+*.xml
+*.iml
