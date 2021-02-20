@@ -9,9 +9,6 @@ a.hidden:hover {
 
 body {
 	background-color: #2c2f33;
-	background-image: url("res/waves.svg");
-	background-position-y: center;
-	background-repeat: repeat-x;
 	color: #ffffff;
 
 	font-family: 'Open Sans', sans-serif;
