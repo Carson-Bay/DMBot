@@ -16,3 +16,9 @@ def create(title_string: str, description_string: str, colour_string: str):
     )
 
     return returnMessage
+
+
+# adds image to passed in embed
+def add_image(embed_msg: discord.embeds.Embed, url: str):
+    embed_msg.set_image(url=url)
+
