@@ -2,7 +2,7 @@ import os
 import discord
 import pickle
 from dotenv import load_dotenv
-from commands import embedMessage, ping, utils
+from commands import embedMessage, ping, utils, dice
 from classes import Guild, User
 
 
@@ -36,7 +36,8 @@ async def create_character(ctx: discord.Message, client: discord.Client):
 commands = {
     "ping": ping.ping,
     "changeprefix": change_prefix,
-    "me": utils.start_dm
+    "me": utils.start_dm,
+    "roll": dice.roll_dice
 }
 
 # Initializations
