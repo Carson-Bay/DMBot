@@ -161,6 +161,13 @@ async def on_ready():
     except FileNotFoundError:
         print("Character file not found")
 
+    # Load monsters
+    try:
+        with open("monsters.pickle", "rb") as file:
+            monsters = pickle.load(file)
+    except FileNotFoundError:
+        print("Monster file not found")
+
     for guild in client.guilds:
         try:
             prefix = prefixes[guild.id]

@@ -26,3 +26,4 @@ def monster_parse():
 
 if __name__ == "__main__":
     monster_parse()
+
