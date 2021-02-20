@@ -1,4 +1,5 @@
-from enum import IntEnum
+from enum import Enum
+import random
 
 class Attack:
 
@@ -30,9 +31,9 @@ class Dice:
             result.append(random.randint(1, sides))
         return result
 
-class CharacterCompletion(IntEnum):
-    START = 0
-    NAME = 1
+class CharacterCompletion(Enum):
+    START = "Starting character creation process.\nThis process can be terminated at any time with \"exit\" or \"cancel\"."
+    NAME = "What will the name of your character be?"
     RACE = 2
     CLASS = 3
     BACKGROUND = 4
@@ -70,6 +71,7 @@ class CharacterCompletion(IntEnum):
     BONDS = 35
     FLAWS = 36
     FINISH = 37
+    CANCEL = -1
 
 class Character:
 
@@ -106,23 +108,23 @@ class Character:
         self.proficiency_bonus = 0
         self.passive_perception = 0
         self.skills = {
-            "Acrobatics": 0
-            "Animal Handling": 0
-            "Arcana": 0
-            "Athletics": 0
-            "Deception": 0
-            "History": 0
-            "Insight": 0
-            "Intimidation": 0
-            "Investigation": 0
-            "Medicine": 0
-            "Nature": 0
-            "Perception": 0
-            "Performance": 0
-            "Persuasion": 0
-            "Religion": 0
-            "Sleight of Hand": 0
-            "Stealth": 0
+            "Acrobatics": 0,
+            "Animal Handling": 0,
+            "Arcana": 0,
+            "Athletics": 0,
+            "Deception": 0,
+            "History": 0,
+            "Insight": 0,
+            "Intimidation": 0,
+            "Investigation": 0,
+            "Medicine": 0,
+            "Nature": 0,
+            "Perception": 0,
+            "Performance": 0,
+            "Persuasion": 0,
+            "Religion": 0,
+            "Sleight of Hand": 0,
+            "Stealth": 0,
             "Survival": 0
         }
         
@@ -156,16 +158,34 @@ class Character:
         self.creation_progress = CharacterCompletion.START
         self.confirmation = False
 
-    def continue_create(self, input):
-        if self.creation_progress == CharacterCompletion.START:
-            if self.confirmation: # this is the confirmation message
-                if input == "y" || input == "yes":
-                    # proceed
-                else:
-                    # reject
-            else:
+    # helper functions
+    def is_positive_input(str):
+        return str == "y" or str == "yes"
 
-                # send confirm message
+    def continue_create(self, input):
+        if input == "cancel" or input == "exit":
+            self.confirmation = True
+            self.creation_progress = CharacterCompletion.CANCEL
+            return "Are you sure you want to exit character creation? All of your progress will be deleted! (y/yes to confirm, any other input to cancel)"
+        if self.creation_progress == CharacterCompletion.CANCEL and self.confirmation:
+            if is_positive_input(input):
+                return "Character creation has been cancelled."
+            else:
+                return "Character creation will continue. {}".format(creation_progress.value)
+        if self.creation_progress == CharacterCompletion.START:
+            if self.confirmation: # this is the response to the confirmation message
+                self.confirmation = False
+                if is_positive_input(input):
+                    self.creation_progress = CharacterCompletion.NAME
+                else:
+                    self.name = ""
+                    return creation_progress.value
+            else:
+                if "\n" in input:
+                    return "Your name may not contain newline characters! Try again:"
+                self.name = input
+                self.confirmation = True
+                return "Your character's name will be {}, are you sure? (y/yes to confirm, any other input to cancel)".format(input)
 
     def __str__(self):
         # Character sheet

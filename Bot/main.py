@@ -26,7 +26,10 @@ async def change_prefix(ctx: discord.Message, client: discord.Client):
 
 async def create_character(ctx: discord.Message, client: discord.Client):
     dm_channel = await ctx.author.create_dm()
-    await dm_channel.send("# START CHARACTER CREATION")
+    if user_characters[ctx.author.id].character[len(user_characters[ctx.author.id].character) - 1].creation_progress != CharacterCompletion.FINISH:
+        return await ctx.channel.send(embed=embedMessage.create("Warning!", "There is already a character in the process of creation, please finish or cancel the character first!", "red"))
+    
+    await dm_channel.send(CharacterCompletion.START.value)
 
     user_characters[ctx.author.id].add_char_sheet(Character())
 
@@ -134,6 +137,8 @@ async def on_message(ctx):
         output = current_character.continue_create(ctx.content)
         dm_channel = await ctx.author.create_dm()
         await dm_channel.send(output)
+        if output != "Character creation has been cancelled.":
+            user_characters[ctx.author.id].character.append(current_character)
         return
 
     try:
