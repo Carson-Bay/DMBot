@@ -2,7 +2,7 @@ import os
 import discord
 import pickle
 from dotenv import load_dotenv
-from commands import ping, utils
+from commands import embedMessage, ping, utils
 from classes import Guild
 
 
