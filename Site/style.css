@@ -34,7 +34,7 @@ header {
 
 header * {
 	display: inline;
-	margin: 2px;
+	margin: 2px 5px 2px 5px;
 }
 
 html, body {
