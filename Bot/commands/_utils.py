@@ -1,3 +1,9 @@
+import discord
+import pickle
 
-def parse(content):
+
+def _parse(content):
     return content.split()
+
+
+
