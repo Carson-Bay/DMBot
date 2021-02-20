@@ -29,12 +29,11 @@ commands = {
     "me": utils.start_dm
 }
 
+# Initializations
 guilds = {}  # Dictionary of Server objects (Initialized at start)
-
-prefixes = {}
+prefixes = {}  # Dictionary of prefixes keyed by server ID
 
 default_prefix = "$"
-
 client = discord.Client()
 
 
