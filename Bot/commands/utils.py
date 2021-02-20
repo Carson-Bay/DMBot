@@ -1,8 +1,11 @@
 import discord
+import shlex
 
 
-def parse(content):
-    return content.split()
+def parse(msg):
+    msg = msg.replace('“', '"')
+    msg = msg.replace('”', '"')
+    return shlex.split(msg)
 
 
 async def start_dm(ctx: discord.Message, client: discord.Client):

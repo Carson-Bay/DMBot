@@ -5,9 +5,6 @@ from dotenv import load_dotenv
 from classes import Guild, User, Session
 from character import Character
 from commands import embedMessage, ping, utils, dice
-import monstersParser
-
-global monsters
 
 
 # ----------Persistent data commands----------
@@ -77,23 +74,43 @@ async def end_session(ctx: discord.Message, client: discord.Client):
     return await ctx.channel.send(embed=embedMessage.create("Session", "Your session has concluded", "blue"))
 
 
-# ----------Monster Lookup----------
+# ----------Lookup Functions----------
+async def lookup(ctx: discord.Message, client: discord.Client):
+    args = utils.parse(ctx.content)
+    if len(args) != 3 and len(args) != 2:
+        return await ctx.channel.send(embed=embedMessage.create("Lookup Error", "Missing arguments", "red"))
+
+    if args[1] == "monster":
+        await monster_lookup(ctx, client)
+    else:
+        await ctx.channel.send(embed=embedMessage.create("Lookup Error", "Invalid lookup type", "red"))
+
+
 async def monster_lookup(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
-    if len(args) != 2:
-        return await ctx.channel.send(embed=embedMessage.create("Monster Error", "Incorrect Arguments", "red"))
+    if len(args) != 3:
+        return await ctx.channel.send(embed=embedMessage.create("Monster Error", "Incorrect Arguments\n"
+                                                                                 "*You may need to put quotes around monster name*", "red"))
+
+    # Load monsters
+    try:
+        with open("monsters.pickle", "rb") as file:
+            monsters = pickle.load(file)
+    except FileNotFoundError:
+        print("Monster file not found")
 
     else:
         for key in monsters.keys():
-            if key == args[1]:
+            if key.lower() == args[2].lower():
                 monster_data = monsters[key]
-                return await ctx.channel.send(embed=embedMessage.create("{}".format(args[1]),
-                                                                        "Type: {0}\n"
-                                                                        "Size: {1}\n"
-                                                                        "Alignment: {2}\n"
-                                                                        "CR {3}\n"
-                                                                        "XP {4}\n"
-                                                                        "Tags {5}"
+                return await ctx.channel.send(embed=embedMessage.create("{}".format(key),
+                                                                        "--------------------------\n"
+                                                                        "**Type**: {0}\n"
+                                                                        "**Size**: {1}\n"
+                                                                        "**Alignment**: {2}\n"
+                                                                        "**CR**: {3}\n"
+                                                                        "**XP**: {4}\n"
+                                                                        "**Tags**: {5}"
                                                                         "".format(monster_data["type"],
                                                                                   monster_data["size"],
                                                                                   monster_data["align"],
@@ -101,7 +118,8 @@ async def monster_lookup(ctx: discord.Message, client: discord.Client):
                                                                                   monster_data["xp"],
                                                                                   monster_data["tags"]), "green"))
 
-        return await ctx.channel.send(embed=embedMessage.create("Monster Error", "Monster {} not found".format(args[1]), "red"))
+        return await ctx.channel.send(embed=embedMessage.create("Monster Error", "Monster {} not found\n"
+                                                                                 "*You may need to put quotes around monster name*".format(args[2]), "red"))
 
 
 # Dictionary of commands
@@ -111,7 +129,7 @@ commands = {
     "createcharacter": create_character,
     "session": session_manager,
     "roll": dice.roll_dice,
-    "lookup": monster_lookup
+    "lookup": lookup
 }
 
 # Initializations
@@ -135,13 +153,6 @@ async def on_ready():
             prefixes = pickle.load(file)
     except FileNotFoundError:
         print("Prefix file not found")
-
-    # Load monsters
-    try:
-        with open("monsters.pickle", "rb") as file:
-            monsters = pickle.load(file)
-    except FileNotFoundError:
-        print("Monster file not found")
 
     # Load User Characters
     try:
