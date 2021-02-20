@@ -1,3 +1,5 @@
+import discord
+
 
 class Guild:
     def __init__(self, guild_id, prefix):
@@ -13,3 +15,8 @@ class User:
         self.id = user_id
         self.character = char_sheet
 
+
+class Session:
+    def __init__(self, guild_id):
+        self.id = guild_id
+        self.characters = None
