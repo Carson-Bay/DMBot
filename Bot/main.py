@@ -75,7 +75,7 @@ async def show_character(ctx: discord.Message, client: discord.Client):
     user_id = ctx.author.id
     args = utils.parse(ctx.content)
     try:
-        if user_characters[user_id] is None:
+        if user_characters[user_id] is None or len(user_characters[ctx.author.id].character) == 0:
             return await ctx.channel.send(
                 embed=embedMessage.create("You have no characters to show", "Make one using $character create", "red"))
     except KeyError:
@@ -124,7 +124,7 @@ async def character_add_item(ctx: discord.Message, client: discord.Client):
     character = None
 
     for c in sessions[guild_id].characters:
-        for k in user_characters[user_id]:
+        for k in user_characters[user_id].character:
             if c.name == k.name:
                 character = c
                 break
@@ -171,7 +171,7 @@ async def character_del_item(ctx: discord.Message, client: discord.Client):
     character = None
 
     for c in sessions[guild_id].characters:
-        for k in user_characters[user_id]:
+        for k in user_characters[user_id].character:
             if c.name.lower() == k.name.lower():
                 character = c
                 break
@@ -201,7 +201,7 @@ async def character_delete(ctx: discord.Message, client: discord.Client):
         ctx.channel.send(embed=embedMessage.create("Character error", "Wrong number of arguments", "red"))
 
     try:
-        characters = user_characters[ctx.author.id]
+        characters = user_characters[ctx.author.id].character
     except KeyError:
         return await ctx.channel.send(embed=embedMessage.create("Character error", "Character not found", "red"))
 
@@ -229,7 +229,7 @@ async def character_revive(ctx: discord.Message, client: discord.Client):
     character = None
 
     for c in sessions[guild_id].characters:
-        for k in user_characters[user_id]:
+        for k in user_characters[user_id].character:
             if c.name.lower() == k.name.lower():
                 character = c
                 break
@@ -252,7 +252,7 @@ async def character_list(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
 
     try:
-        if user_characters[user_id] is None:
+        if user_characters[user_id] is None or len(user_characters[ctx.author.id].character) == 0:
             return await ctx.channel.send(embed=embedMessage.create("You don't have any characters to show",
                                                                     "Try creating one with $character create", "red"))
     except KeyError:
@@ -419,7 +419,7 @@ async def add_to_session(ctx: discord.Message, client: discord.Client):
         return await ctx.channel.send(
             embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
     try:
-        if user_characters[user_id] is None:
+        if user_characters[user_id] is None or len(user_characters[ctx.author.id].character) == 0:
             return await ctx.channel.send(
                 embed=embedMessage.create("You have no characters to show", "Make one using $character create", "red"))
     except KeyError:
