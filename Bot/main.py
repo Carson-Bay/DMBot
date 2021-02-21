@@ -144,7 +144,38 @@ async def combat_command_manager(ctx: discord.Message, client: discord.Client):
 # TODO start, damage and end
 
 async def start_combat(ctx: discord.Message, client: discord.Client):
-    pass
+    gid = ctx.guild.id
+
+    session = None
+    try:
+        session = sessions[gid]
+    except KeyError:
+        return await ctx.channel.send("A session has not been started. One must be started before entering combat.")
+
+    if session == None:
+        return await ctx.channel.send("A session has not been started. One must be started before entering combat.")
+    
+    characters = session.characters
+    if characters == None or len(characters) == 0:
+        return await ctx.channel.send("There are no characters in the session.")
+    
+    initiatives = {}
+    for char in characters:
+        roll = random.randint(1, 20)
+        mod = char.dex_mod
+        initiatives[roll + mod] = (roll, mod, char)
+    
+    combat_order = []
+    for init in sorted(initiatives.keys()):
+        combat_order.append(initiatives[init])
+
+    combat_string = ""
+    for i in range(0, len(combat_order)):
+        com = combat_order[i]
+        combat_string += "{ord}. {name} ({roll} + {mod})\n".format(ord = i + 1, name = com[2].name, roll = com[0], mod = com[1])
+
+    return await ctx.channel.send(embed = embedMessage.create("Combat Order", combat_string, "blue"))
+
 
 
 async def damage_in_combat(ctx: discord.Message, client: discord.Client):
