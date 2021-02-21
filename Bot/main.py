@@ -37,7 +37,9 @@ async def character_command_manager(ctx: discord.Message, client: discord.Client
         return await show_character(ctx, client)
     elif args[1] == "add":
         return await character_add_item(ctx, client)
-    elif args[1] == "delete":
+    elif args[1] == "deleteitem":
+        return await character_del_item(ctx, client)
+    elif args[1] == "deletecharacter":
         return await character_delete(ctx, client)
     elif args[1] == "revive":
         return await character_revive(ctx, client)
@@ -96,9 +98,6 @@ async def show_character(ctx: discord.Message, client: discord.Client):
 
 # TODO add delete and revive
 
-async def character_add_item(ctx: discord.Message, client: discord.Client):
-    pass
-
 
 async def character_delete(ctx: discord.Message, client: discord.Client):
     pass
@@ -135,6 +134,98 @@ async def character_list(ctx: discord.Message, client: discord.Client):
 
         ctx.channel.send(embed=embedMessage.create("User's Characters", message, 'blue'))
 
+
+async def character_add_item(ctx: discord.Message, client: discord.Client):
+    guild_id = ctx.guild.id
+    user_id = ctx.author.id
+    args = utils.parse(ctx.content)
+    item = args[2]
+    amount = 1
+
+    # format item amount
+
+    if len(args) > 3:
+        if args[3].isnumeric():
+            amount = int(args[3])
+        else:
+            return await ctx.channel.send(
+                embed=embedMessage.create("Did not include an integer for amount", "Try entering an item and then a natural number", "red"))
+
+    try:
+        if sessions[guild_id] is None:
+            return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+    except KeyError:
+        return await ctx.channel.send(
+            embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+
+        # Check if character in session
+        character = None
+
+    for c in sessions[guild_id].characters:
+        for k in user_characters[user_id]:
+            if c.name == k.name:
+                character = c
+                break
+
+    if character is None:
+        return await ctx.channel.send(embed=embedMessage.create('Characters in Session', 'User does not have character in session', 'red'))
+    try:
+        c.inventory[item] += amount
+
+    except KeyError:
+        c.inventory[item] = amount
+
+    await ctx.channel.send(embed=embedMessage.create('Item Added', '', 'blue'))
+
+
+async def character_del_item(ctx: discord.Message, client: discord.Client):
+    guild_id = ctx.guild.id
+    user_id = ctx.author.id
+    args = utils.parse(ctx.content)
+    item = args[2]
+    amount = 1
+
+    # format item amount
+
+    if len(args) > 3:
+        if args[3].isnumeric():
+            amount = int(args[3])
+        else:
+            return await ctx.channel.send(
+                embed=embedMessage.create("Did not include an integer for amount",
+                                          "Try entering an item and then a natural number", "red"))
+
+    try:
+        if sessions[guild_id] is None:
+            return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+    except KeyError:
+        return await ctx.channel.send(
+            embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+        # Check if character in session
+        character = None
+
+
+    for c in sessions[guild_id].characters:
+        for k in user_characters[user_id]:
+            if c.name == k.name:
+                character = c
+                break
+
+    if character is None:
+        return await ctx.channel.send(
+            embed=embedMessage.create('Characters in Session', 'User does not have character in session', 'red'))
+    try:
+        # amount before deletion
+        current_amount = character.inventory[item]
+
+        if current_amount - amount < 0:
+            return await ctx.channel.send(embed=embedMessage.create('Error deleting items', 'Not enough items to delete', 'red'))
+
+        else:
+            character.inventory[item] -= amount
+            await ctx.channel.send(embed=embedMessage.create('Item(s) removed', '', 'blue'))
+    except KeyError:
+        return await ctx.channel.send(embed=embedMessage.create("Don't have this item", '', 'red'))
 
 # ----------Combat commands----------
 async def combat_command_manager(ctx: discord.Message, client: discord.Client):
@@ -320,7 +411,7 @@ async def session_list(ctx: discord.Message, client: discord.Client):
         return await ctx.channel.send(
             embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
 
-    else:
+
         # Add all the characters ot the str
         message = ''
 
