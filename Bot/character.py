@@ -432,13 +432,3 @@ class Character:
                     self.personality_trait, self.ideals, self.bonds, self.flaws)
 
         return chara_str
-
-
-if __name__ == '__main__':
-    c = Character()
-    c.hit_dice = Dice(1, 2)
-    c.features['beans'] = 'burger'
-    c.features['slurp'] = 'schlorp'
-    c.languages['slurp'] = 'schlorp'
-    c.languages['gchgccc'] = 'schlorp'
-    print(str(c))
