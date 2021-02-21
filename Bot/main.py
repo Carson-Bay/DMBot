@@ -196,11 +196,11 @@ async def damage_in_combat(ctx: discord.Message, client: discord.Client):
     except KeyError:
         return await ctx.channel.send("A session has not been started. One must be started to deal combat damage.")
 
-    if session == None:
+    if session is None:
         return await ctx.channel.send("A session has not been started. One must be started to deal combat damage.")
     
     characters = session.characters
-    if characters == None or len(characters) == 0:
+    if characters is None or len(characters) == 0:
         return await ctx.channel.send("There are no characters in the session.")
     
     args = utils.parse(ctx.content)
@@ -209,7 +209,7 @@ async def damage_in_combat(ctx: discord.Message, client: discord.Client):
     
     name = args[1]
     dmg = args[2]
-    if not dmg.isnumeric():
+    if dmg.isnumeric():
         dmg = int(dmg)
     else:
         return await ctx.channel.send("Damage must be a number.")
