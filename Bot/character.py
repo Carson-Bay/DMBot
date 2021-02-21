@@ -424,17 +424,14 @@ class Character:
         else:
             return "An unknown error has occurred."
 
-    def check_input(self, input, current_step, next_msg, default_value, verification, error_msg, change_var, confirmation_msg):
+    def check_input(self, input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg):
         input_lower = input.lower()
         if self.confirmation: # this is the response to the confirmation message
             self.confirmation = False
             if utils.is_positive_input(input_lower):
                 self.creation_progress = current_step
                 self.current_message = next_msg
-                return self.current_message
-            else:
-                self.race = default_value
-                return self.current_message
+            return self.current_message
         else:
             if not verification(input):
                 return error_msg
