@@ -6,8 +6,8 @@ from classes import Guild, User, Session
 from character import Character, CharacterCompletion
 from commands import embedMessage, ping, utils, dice
 
-FILE_DIR = os.path.dirname(os.path.abspath(__file__))
-PARENT_DIR = os.path.join(FILE_DIR, os.pardir)
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 
 # ----------Persistent data commands----------
@@ -21,10 +21,27 @@ async def change_prefix(ctx: discord.Message, client: discord.Client):
     else:
         guilds[ctx.guild.id].change_prefix(args[1])
         prefixes[ctx.guild.id] = args[1]
-        with open(os.path.join(PARENT_DIR, "prefix.pickle"), 'wb') as file:
+        with open(os.path.join(__location__, "prefix.pickle"), 'wb') as file:
             pickle.dump(prefixes, file)
 
         return await ctx.channel.send("Prefix has been changed to {}".format(args[1]))
+
+
+async def character_command_manager(ctx: discord.Message, client: discord.Client):
+    args = utils.parse(ctx.content)
+
+    if args[1] == "create":
+        return await create_character(ctx, client)
+    elif args[1] == "list":
+        return await list_characters(ctx, client)
+    elif args[1] == "add":
+        return await character_add_item(ctx, client)
+    elif args[1] == "delete":
+        return await character_delete(ctx, client)
+    elif args[1] == "revive":
+        return await character_revive(ctx, client)
+    else:
+        return await ctx.channel.send(embed=embedMessage.create("Character", "Not valid character command", "red"))
 
 
 async def create_character(ctx: discord.Message, client: discord.Client):
@@ -40,8 +57,44 @@ async def create_character(ctx: discord.Message, client: discord.Client):
 
     user_characters[ctx.author.id].add_char_sheet(new_character)
 
-    with open(os.path.join(PARENT_DIR, "characters.pickle"), "wb") as file:
+    with open(os.path.join(__location__, "characters.pickle"), "wb") as file:
         pickle.dump(user_characters, file)
+
+
+async def list_characters(ctx: discord.Message, client: discord.Client):
+    pass
+
+
+async def character_add_item(ctx: discord.Message, client: discord.Client):
+    pass
+
+
+async def character_delete(ctx: discord.Message, client: discord.Client):
+    pass
+
+
+async def character_revive(ctx: discord.Message, client: discord.Client):
+    pass
+
+
+# ----------Combat commands----------
+async def combat_command_manager(ctx: discord.Message, client: discord.Client):
+    args = utils.parse(ctx.content)
+
+    if args[1] == "start":
+        return await start_combat(ctx, client)
+    elif args[1] == "damage":
+        return await damage_in_combat(ctx, client)
+    else:
+        return await ctx.channel.send(embed=embedMessage.create("Combat", "Not valid combat command", "red"))
+
+
+async def start_combat(ctx: discord.Message, client: discord.Client):
+    pass
+
+
+async def damage_in_combat(ctx: discord.Message, client: discord.Client):
+    pass
 
 
 # ----------Session commands----------
@@ -101,7 +154,7 @@ async def monster_lookup(ctx: discord.Message, client: discord.Client):
 
     # Load monsters
     try:
-        with open(os.path.join(PARENT_DIR, "monsters.pickle"), "rb") as file:
+        with open(os.path.join(__location__, "monsters.pickle"), "rb") as file:
             monsters = pickle.load(file)
     except FileNotFoundError:
         print("Monster file not found")
@@ -156,21 +209,21 @@ async def on_ready():
 
     # Load prefix preferences
     try:
-        with open(os.path.join(PARENT_DIR, "prefix.pickle"), "rb") as file:
+        with open(os.path.join(__location__, "prefix.pickle"), "rb") as file:
             prefixes = pickle.load(file)
     except FileNotFoundError:
         print("Prefix file not found")
 
     # Load User Characters
     try:
-        with open(os.path.join(PARENT_DIR, "characters.pickle"), "rb") as file:
+        with open(os.path.join(__location__, "characters.pickle"), "rb") as file:
             user_characters = pickle.load(file)
     except FileNotFoundError:
         print("Character file not found")
 
     # Load monsters
     try:
-        with open(os.path.join(PARENT_DIR, "monsters.pickle"), "rb") as file:
+        with open(os.path.join(__location__, "monsters.pickle"), "rb") as file:
             monsters = pickle.load(file)
     except FileNotFoundError:
         print("Monster file not found")
