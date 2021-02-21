@@ -135,7 +135,7 @@ class Character:
         self.other_proficiencies = [] # set of Description
 
         self.currency = [0, 0, 0, 0, 0] # CP, SP, EP, GP, PP
-        self.inventory = []
+        self.inventory = {}
 
         self.attacks = []
         self.other_attacks = [] # set of Description
@@ -185,7 +185,7 @@ class Character:
             error_msg = "Your name may not contain newline characters! Try again:"
             change_var = self.set_name
             confirmation_msg = "Your character's name will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
-            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+            return self.check_input(input, current_step, next_msg, default_value, verification, error_msg, change_var, confirmation_msg)
         elif self.creation_progress == CharacterCompletion.NAME:
             current_step = CharacterCompletion.RACE
             next_msg = "What will the class of your character be?"
@@ -193,7 +193,7 @@ class Character:
             error_msg = ""
             change_var = self.set_race
             confirmation_msg = "Your character's race will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
-            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+            return self.check_input(input, current_step, next_msg, default_value, verification, error_msg, change_var, confirmation_msg)
         elif self.creation_progress == CharacterCompletion.RACE:
             current_step = CharacterCompletion.CLASS
             next_msg = "What will the background of your character be?"
@@ -292,7 +292,7 @@ class Character:
             return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
         elif self.creation_progress == CharacterCompletion.OTHER_PROFICIENCIES:
             current_step = CharacterCompletion.CURRENCY
-            next_msg = "Enter the current inventory of the character (separated by commas):"
+            next_msg = "Enter the current inventory of the character, in the format `[item name]: [amount],, [item2 name]: [amount]`:"
             verification = lambda str : re.fullmatch("\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+", str) is not None
             error_msg = "Incorrect format! Make sure it is in [CP] [SP] [EP] [GP] [PP]. Try again:"
             change_var = self.set_currency
@@ -301,7 +301,7 @@ class Character:
         elif self.creation_progress == CharacterCompletion.CURRENCY:
             current_step = CharacterCompletion.EQUIPMENT
             next_msg = "Enter the attacks that the character has, in the format `[name], [atk bonus], [damage], [other descriptions] | [name], [atk bonus], [damage], [other descriptions]` etc.:"
-            verification = lambda str : True
+            verification = lambda str : str == "None" or re.fullmatch("(.+:.+,,)*.+:.+", str) is not None
             error_msg = "Incorrect format! Try again:"
             change_var = self.set_inventory
             confirmation_msg = "Your character's inventory will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
@@ -424,20 +424,23 @@ class Character:
         else:
             return "An unknown error has occurred."
 
-    def check_input(self, input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg):
+    def check_input(self, input, current_step, next_msg, default_value, verification, error_msg, change_var, confirmation_msg):
         input_lower = input.lower()
         if self.confirmation: # this is the response to the confirmation message
             self.confirmation = False
             if utils.is_positive_input(input_lower):
                 self.creation_progress = current_step
                 self.current_message = next_msg
-            return self.current_message
+                return self.current_message
+            else:
+                self.race = default_value
+                return self.current_message
         else:
             if not verification(input):
                 return error_msg
             change_var(input)
             self.confirmation = True
-            return confirmation_msg.format(input)
+            return confirmation_msg().format(input)
 
     # functions to change variables, to pass to check_input
     def set_name(self, val):
@@ -523,12 +526,15 @@ class Character:
     def set_currency(self, val):
         self.currency = list(map(lambda str : int(str), re.split(" +", val)))
 
-    # in the format [item], [item] and so on
+    # in the format [item], [item]
     def set_inventory(self, val):
         if val == "None":
             self.inventory = []
             return
-        self.inventory = re.split("\\s*,\\s*", val)
+        vals = re.split("\\s*,,\\s*", val)
+        for str in vals:
+            i = str.index(":")
+            self.inventory[str[:i].strip()] = str[i + 1:].strip()
 
     # in the format [name], [atk bonus], [damage], [other descriptions] | [name], [atk bonus], [damage], [other descriptions] etc.
     def set_attacks(self, val):
@@ -537,7 +543,7 @@ class Character:
             return
         vals = re.split("\\s*\\|\\s*", val)
         for atk in vals:
-            components = re.split("\\s*,\\s*", atk)
+            components = re.split(" *, *", atk)
             self.attacks.append(Attack(components[0], int(components[1]), components[2], components[3]))
 
     # in the format [Name]: [Description],, [Name]: [Description] and so on
@@ -548,7 +554,7 @@ class Character:
         vals = re.split("\\s*,,\\s*", val)
         for str in vals:
             i = str.index(":")
-            self.other_attacks.append(Description(str[:i], str[i + 1:].strip()))
+            self.other_attacks.append(Description(str[:i].strip(), str[i + 1:].strip()))
     
     def set_armor_class(self, val):
         self.armor_class = int(val)
@@ -584,7 +590,7 @@ class Character:
         vals = re.split("\\s*,,\\s*", val)
         for str in vals:
             i = str.index(":")
-            self.features.append(Description(str[:i], str[i + 1:].strip()))
+            self.features.append(Description(str[:i].strip(), str[i + 1:].strip()))
 
     def set_personality_trait(self, val):
         self.personality_trait = val
