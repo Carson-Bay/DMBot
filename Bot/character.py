@@ -181,7 +181,6 @@ class Character:
         if self.creation_progress == CharacterCompletion.START:
             current_step = CharacterCompletion.NAME
             next_msg = "What will the race of your character be?"
-            default_value = ""
             verification = lambda str : "\n" not in str
             error_msg = "Your name may not contain newline characters! Try again:"
             change_var = self.set_name
@@ -190,7 +189,6 @@ class Character:
         elif self.creation_progress == CharacterCompletion.NAME:
             current_step = CharacterCompletion.RACE
             next_msg = "What will the class of your character be?"
-            default_value = ""
             verification = lambda str : True # TODO verification
             error_msg = ""
             change_var = self.set_race
@@ -199,7 +197,6 @@ class Character:
         elif self.creation_progress == CharacterCompletion.RACE:
             current_step = CharacterCompletion.CLASS
             next_msg = "What will the background of your character be?"
-            default_value = ""
             verification = lambda str : True # TODO verification
             error_msg = ""
             change_var = self.set_class
