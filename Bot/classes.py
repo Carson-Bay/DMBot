@@ -11,12 +11,12 @@ class Guild:
 
 
 class User:
-    def __init__(self, user_id, char_sheet):
+    def __init__(self, user_id, char_sheet: list):
         self.id = user_id
-        self.character = char_sheet
+        self.characters = char_sheet
 
     def add_char_sheet(self, sheet):
-        self.character.append(sheet)
+        self.characters.append(sheet)
 
 
 class Session:
