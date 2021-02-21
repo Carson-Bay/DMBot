@@ -435,7 +435,7 @@ async def add_to_session(ctx: discord.Message, client: discord.Client):
             embed=embedMessage.create('you do not have this character', 'Try making it using $character create', 'red'))
     else:
         sessions[guild_id].characters.append(character)
-        ctx.channel.send(embed=embedMessage.create('Session', 'Character Added', 'blue'))
+        return await ctx.channel.send(embed=embedMessage.create('Session', 'Character Added', 'blue'))
 
 
 async def session_list(ctx: discord.Message, client: discord.Client):
