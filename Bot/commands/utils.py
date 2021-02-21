@@ -13,3 +13,6 @@ async def start_dm(ctx: discord.Message, client: discord.Client):
 async def respond(ctx: discord.Message, client: discord.Client):
     channel = ctx.channel
     await channel.send("hello")
+
+def is_positive_input(str):
+    return str == "y" or str == "yes"

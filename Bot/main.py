@@ -3,7 +3,7 @@ import discord
 import pickle
 from dotenv import load_dotenv
 from classes import Guild, User, Session
-from character import Character
+from character import Character, CharacterCompletion
 from commands import embedMessage, ping, utils, dice
 
 
@@ -26,12 +26,16 @@ async def change_prefix(ctx: discord.Message, client: discord.Client):
 
 async def create_character(ctx: discord.Message, client: discord.Client):
     dm_channel = await ctx.author.create_dm()
-    if user_characters[ctx.author.id].character[len(user_characters[ctx.author.id].character) - 1].creation_progress != CharacterCompletion.FINISH:
+    if ctx.author.id not in user_characters:
+        user_characters[ctx.author.id] = User(ctx.author.id, [])
+    elif len(user_characters[ctx.author.id].character) != 0 and user_characters[ctx.author.id].character[len(user_characters[ctx.author.id].character) - 1].creation_progress != CharacterCompletion.FINISH:
         return await ctx.channel.send(embed=embedMessage.create("Warning!", "There is already a character in the process of creation, please finish or cancel the character first!", "red"))
     
-    await dm_channel.send(CharacterCompletion.START.value)
+    new_character = Character()
+    await dm_channel.send("Starting character creation process.\nThis process can be terminated at any time with \"exit\" or \"cancel\".")
+    await dm_channel.send(new_character.current_message)
 
-    user_characters[ctx.author.id].add_char_sheet(Character())
+    user_characters[ctx.author.id].add_char_sheet(new_character)
 
     with open("characters.pickle", "wb") as file:
         pickle.dump(user_characters, file)
@@ -125,12 +129,15 @@ async def on_message(ctx):
         return
 
     if ctx.guild is None:
+        if user_characters[ctx.author.id] is None or len(user_characters[ctx.author.id].character) == 0:
+            return
         current_character = user_characters[ctx.author.id].character.pop()
-        output = current_character.continue_create(ctx.content)
-        dm_channel = await ctx.author.create_dm()
-        await dm_channel.send(output)
-        if output != "Character creation has been cancelled.":
-            user_characters[ctx.author.id].character.append(current_character)
+        if current_character.creation_progress != CharacterCompletion.FINISH:
+            output = current_character.continue_create(ctx.content)
+            dm_channel = await ctx.author.create_dm()
+            await dm_channel.send(output)
+            if output != "Character creation has been cancelled.":
+                user_characters[ctx.author.id].character.append(current_character)
         return
 
     try:
