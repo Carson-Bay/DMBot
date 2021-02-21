@@ -97,6 +97,8 @@ async def show_character(ctx: discord.Message, client: discord.Client):
 
 
 async def character_add_item(ctx: discord.Message, client: discord.Client):
+    # Only work with character in session
+    # This function does not add item for user_characters character, only in session character
     guild_id = ctx.guild.id
     user_id = ctx.author.id
     args = utils.parse(ctx.content)
@@ -131,15 +133,19 @@ async def character_add_item(ctx: discord.Message, client: discord.Client):
     if character is None:
         return await ctx.channel.send(embed=embedMessage.create('Characters in Session', 'User does not have character in session', 'red'))
     try:
-        c.inventory[item] += amount
+        character.inventory[item] += amount
+
 
     except KeyError:
-        c.inventory[item] = amount
+        character.inventory[item] = amount
 
     await ctx.channel.send(embed=embedMessage.create('Item Added', '', 'blue'))
 
 
 async def character_del_item(ctx: discord.Message, client: discord.Client):
+    # Only work with character in session
+    # This function does not delete item from user_characters character, only in session character
+
     guild_id = ctx.guild.id
     user_id = ctx.author.id
     args = utils.parse(ctx.content)
@@ -178,6 +184,8 @@ async def character_del_item(ctx: discord.Message, client: discord.Client):
         # amount before deletion
         current_amount = character.inventory[item]
 
+
+        # This function does not delete item from user_characters character, only in session character
         if current_amount - amount < 0:
             return await ctx.channel.send(embed=embedMessage.create('Error deleting items', 'Not enough items to delete', 'red'))
 
@@ -208,7 +216,38 @@ async def character_delete(ctx: discord.Message, client: discord.Client):
 # TODO -------------------------------------------------------------------------
 
 async def character_revive(ctx: discord.Message, client: discord.Client):
-    pass
+    # Only work with character in session
+    # This function does not revive user_characters character, only in session character
+    guild_id = ctx.guild.id
+    user_id = ctx.author.id
+    args = utils.parse(ctx.content)
+
+    try:
+        if sessions[guild_id] is None:
+            return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+    except KeyError:
+        return await ctx.channel.send(
+            embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+    # Check if character in session
+    character = None
+
+    for c in sessions[guild_id].characters:
+        for k in user_characters[user_id]:
+            if c.name.lower() == k.name.lower():
+                character = c
+                break
+
+    if character is None:
+        return await ctx.channel.send(
+            embed=embedMessage.create('Characters in Session', 'User does not have character in session', 'red'))
+
+    character.temp_hp = character.max_hp
+
+    await ctx.channel.send(
+        embed=embedMessage.create('Character revived', character.name + ' was revived', 'blue'))
+
+
+
 
 
 async def character_list(ctx: discord.Message, client: discord.Client):
