@@ -528,7 +528,7 @@ class Character:
     # in the format [item], [item]
     def set_inventory(self, val):
         if val == "None":
-            self.inventory = []
+            self.inventory = {}
             return
         vals = re.split("\\s*,,\\s*", val)
         for str in vals:
