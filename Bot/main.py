@@ -39,7 +39,7 @@ async def character_command_manager(ctx: discord.Message, client: discord.Client
         return await character_add_item(ctx, client)
     elif args[1].lower() == "deleteitem":
         return await character_del_item(ctx, client)
-    elif args[1].lower() == "deletecharacter":
+    elif args[1].lower() == "delete":
         return await character_delete(ctx, client)
     elif args[1].lower() == "revive":
         return await character_revive(ctx, client)
