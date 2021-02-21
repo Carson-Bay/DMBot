@@ -24,6 +24,24 @@ async def change_prefix(ctx: discord.Message, client: discord.Client):
         return await ctx.channel.send("Prefix has been changed to {}".format(args[1]))
 
 
+async def character_command_manager(ctx: discord.Message, client: discord.Client):
+    args = utils.parse(ctx.content)
+
+    if args[1] == "create":
+        return await create_character(ctx, client)
+    elif args[1] == "list":
+        return await list_characters(ctx, client)
+    elif args[1] == "add":
+        return await character_add_item(ctx, client)
+    elif args[1] == "delete":
+        return await character_delete(ctx, client)
+    elif args[1] == "revive":
+        return await character_revive(ctx, client)
+    else:
+        return await ctx.channel.send(embed=embedMessage.create("Character", "Not valid character command", "red"))
+
+
+
 async def create_character(ctx: discord.Message, client: discord.Client):
     dm_channel = await ctx.author.create_dm()
     if ctx.author.id not in user_characters:
@@ -40,6 +58,42 @@ async def create_character(ctx: discord.Message, client: discord.Client):
     with open("characters.pickle", "wb") as file:
         pickle.dump(user_characters, file)
 
+
+async def list_characters(ctx: discord.Message, client: discord.Client):
+    pass
+
+
+async def character_add_item(ctx: discord.Message, client: discord.Client):
+    pass
+
+
+async def character_delete(ctx: discord.Message, client: discord.Client):
+    pass
+
+
+async def character_revive(ctx: discord.Message, client: discord.Client):
+    pass
+
+
+
+
+async def combat_command_manager(ctx: discord.Message, client: discord.Client):
+    args = utils.parse(ctx.content)
+
+    if args[1] == "start":
+        return await start_combat(ctx, client)
+    elif args[1] == "damage":
+        return await damage_in_combat(ctx, client)
+    else:
+        return await ctx.channel.send(embed=embedMessage.create("Combat", "Not valid combat command", "red"))
+
+
+async def start_combat(ctx: discord.Message, client: discord.Client):
+    pass
+
+
+async def damage_in_combat(ctx: discord.Message, client: discord.Client):
+    pass
 
 # ----------Session commands----------
 async def session_manager(ctx: discord.Message, client: discord.Client):
