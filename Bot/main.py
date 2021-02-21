@@ -26,7 +26,7 @@ async def change_prefix(ctx: discord.Message, client: discord.Client):
 
         return await ctx.channel.send("Prefix has been changed to {}".format(args[1]))
 
-
+# ----------character commands----------
 async def character_command_manager(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
 
@@ -34,6 +34,8 @@ async def character_command_manager(ctx: discord.Message, client: discord.Client
         return await create_character(ctx, client)
     elif args[1] == "list":
         return await list_characters(ctx, client)
+    elif args[1] == "show":
+        return await show_character(ctx, client)
     elif args[1] == "add":
         return await character_add_item(ctx, client)
     elif args[1] == "delete":
@@ -41,7 +43,7 @@ async def character_command_manager(ctx: discord.Message, client: discord.Client
     elif args[1] == "revive":
         return await character_revive(ctx, client)
     else:
-        return await ctx.channel.send(embed=embedMessage.create("Character", "Not valid character command", "red"))
+        return await ctx.channel.send(embed=embedMessage.create("Character", "Not a valid character command", "red"))
 
 
 async def create_character(ctx: discord.Message, client: discord.Client):
@@ -62,7 +64,52 @@ async def create_character(ctx: discord.Message, client: discord.Client):
 
 
 async def list_characters(ctx: discord.Message, client: discord.Client):
+    guild_id = ctx.guild.id
+
+    args = utils.parse(ctx.content)
+
+    try:
+        if sessions[guild_id] is None:
+            return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+    except KeyError:
+        return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+
+    else:
+        # Add all the characters ot the str
+        message = ''
+
+        for c in sessions[guild_id].characters:
+            message += str(c) + '\n\n'
+
+        # remove the final \n\n
+        message = message[:-2]
+
+        ctx.channel.send(embed=embedMessage.create('Characters in Session', message, 'blue'))
+
     pass
+
+
+async def show_character(ctx: discord.Message, client: discord.Client):
+    user_id = ctx.author.id
+    args = utils.parse(ctx.content)
+    try:
+        if user_characters[user_id] is None:
+            return await ctx.channel.send(embed=embedMessage.create("You have no characters to show", "Make one using $character create", "red"))
+    except KeyError:
+        return await ctx.channel.send(embed=embedMessage.create("You have no characters to show", "Make one using $character create", "red"))
+    else:
+        #check if user has this character
+        message = ''
+        for c in user_characters[user_id].characters:
+            if c.name == args[2]:
+                message = str(c)
+        if len(message) == 0:
+            await ctx.channel.send(
+                ctx.channel.send(embed=embedMessage.create('you do not have this character', 'Try making it using $character create', 'red')))
+        else:
+            ctx.channel.send(embed=embedMessage.create('Character Sheet', message,  'blue'))
+
+
 
 
 async def character_add_item(ctx: discord.Message, client: discord.Client):
@@ -86,7 +133,7 @@ async def combat_command_manager(ctx: discord.Message, client: discord.Client):
     elif args[1] == "damage":
         return await damage_in_combat(ctx, client)
     else:
-        return await ctx.channel.send(embed=embedMessage.create("Combat", "Not valid combat command", "red"))
+        return await ctx.channel.send(embed=embedMessage.create("Combat", "Not a valid combat command", "red"))
 
 
 async def start_combat(ctx: discord.Message, client: discord.Client):
@@ -105,6 +152,8 @@ async def session_command_manager(ctx: discord.Message, client: discord.Client):
         return await start_session(ctx, client)
     elif args[1] == "end":
         return await end_session(ctx, client)
+    elif args[1] == "add":
+        return await add_to_session(ctx, client)
     else:
         return await ctx.channel.send(embed=embedMessage.create("Session", "Not valid session command", "red"))
 
@@ -120,6 +169,36 @@ async def start_session(ctx: discord.Message, client: discord.Client):
     session = Session(guild_id)
     sessions[guild_id] = session
     return await ctx.channel.send(embed=embedMessage.create("Session", "Your session has begun", "blue"))
+
+
+async def add_to_session(ctx: discord.Message, client: discord.Client):
+
+    guild_id = ctx.guild.id
+    user_id = ctx.author.id
+    args = utils.parse(ctx.content)
+
+
+
+    try:
+        if sessions[guild_id] is None:
+            return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+    except KeyError:
+        return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+
+        if user_characters[user_id] is None:
+            return await ctx.channel.send(embed=embedMessage.create("You have no characters to show", "Make one using $character create", "red"))
+    except KeyError:
+        return await ctx.channel.send(embed=embedMessage.create("You have no characters to show", "Make one using $character create", "red"))
+    # check if user has that character
+    character = None
+    for c in user_characters[user_id].characters:
+        if c.name == args[2]:
+            character = c
+    if character is None:
+        await ctx.channel.send(embed=embedMessage.create('you do not have this character', 'Try making it using $character create','red'))
+    else:
+        sessions[guild_id].characters.append(character)
+        ctx.channel.send(embed=embedMessage.create('Session', 'Character Added', 'blue'))
 
 
 async def end_session(ctx: discord.Message, client: discord.Client):
