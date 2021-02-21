@@ -303,7 +303,7 @@ class Character:
         elif self.creation_progress == CharacterCompletion.CURRENCY:
             current_step = CharacterCompletion.EQUIPMENT
             next_msg = "Enter the attacks that the character has, in the format `[name], [atk bonus], [damage], [other descriptions] | [name], [atk bonus], [damage], [other descriptions]` etc.:"
-            verification = lambda str : str == "None" or re.fullmatch("(.+:.+,,)*.+:.+", str) is not None
+            verification = lambda str : str == "None" or re.fullmatch("(.+:\\d+,,)*.+:\\d+", str) is not None
             error_msg = "Incorrect format! Try again:"
             change_var = self.set_inventory
             confirmation_msg = "Your character's inventory will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
