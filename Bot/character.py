@@ -190,19 +190,53 @@ class Character:
     def __str__(self):
         # Character sheet
 
-        #Hit_dice = hit_dice.sides in str so hit_dice must not be non
-        #Might want to change how dicts are printed
+        # returns str of character stats
+
+        #Hit_dice = hit_dice.sides in str so hit_dice must not be none
+
         #Is death save successs/fail supposed to be printed like that
 
 
-        chara_str = '''Name: {}\nClass: {}\nLevel: {}\nBackground: {}\nPlayer Name: {}\nRace: {}\nExp: {} 
-                    \n\nStrength: {} Mod: {} Save: {}\nDexterity: {} Mod: {} Save: {}\nConstitution: {} Mod: {} Save: {}\nIntelligence: {} Mod: {} Save: {}\nWisdom: {} Mod: {} Save: {}\nCharisma: {} Mod: {} Save: {}
-            \n\nInspiration: {}\nProficiency Bonus: {}\nPassive Perception: {}\n\nLanguages:  {}\nProficiencies: {}\nOther Proficiencies: {} 
-            \n\nCurrency:\nCP: {}\nSP: {}\nEP: {}\nGP: {}\nPP: {} 
-            \n\nInventory: {}\nAttacks: {}\nOther Attacks: {}\n 
-            \n\nInitiative Modifier: {}\nSpeed: {}\nHit Dice: {}\nMax HP: {}\nCurrent HP: {}\nDeath Save Successes: {}\nDeath Save Failures: {}
-            \n\nFeatures: {}
-            \n\nPersonality Trait: {}\nIdeals: {}\nBonds: {}\nFlaws: {}''' \
+        chara_str = 'Name: {} \
+                    \nClass: {} \
+                    \nLevel: {}\
+                    \nBackground: {}\
+                    \nPlayer Name: {}\
+                    \nRace: {}\
+                    \nExp: {} \
+                    \n\nStrength: {} Mod: {} Save: {}\
+                    \nDexterity: {} Mod: {} Save: {}\
+                    \nConstitution: {} Mod: {} Save: {}\
+                    \nIntelligence: {} Mod: {} Save: {}\
+                    \nWisdom: {} Mod: {} Save: {}\
+                    \nCharisma: {} Mod: {} Save: {}\
+                    \n\nInspiration: {}\
+                    \nProficiency Bonus: {}\
+                    \nPassive Perception: {}\
+                    \n\nLanguages:  {}\
+                    \nProficiencies: {}\
+                    \nOther Proficiencies: {} \
+                    \n\nCurrency: \
+                    \nCP: {}\
+                    \nSP: {}\
+                    \nEP: {}\
+                    \nGP: {}\
+                    \nPP: {} \
+                    \n\nInventory: {}\
+                    \nAttacks: {}\
+                    \nOther Attacks: {}\
+                    \n\nInitiative Modifier: {}\
+                    \nSpeed: {}\
+                    \nHit Dice: {}\
+                    \nMax HP: {}\
+                    \nCurrent HP: {}\
+                    \nDeath Save Successes: {}\
+                    \nDeath Save Failures: {}\
+                    \n\nFeatures: {}\
+                    \n\nPersonality Trait: {}\
+                    \nIdeals: {}\
+                    \nBonds: {}\
+                    \nFlaws: {}' \
             .format(self.name, self.chara_class, self.level, self.background, self.player_name, self.race,
                     self.exp,
                     self.str, self.str_mod, self.str_save, self.dex, self.dex_mod, self.dex_save, self.con,
