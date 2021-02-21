@@ -135,7 +135,7 @@ class Character:
         self.other_proficiencies = [] # set of Description
 
         self.currency = [0, 0, 0, 0, 0] # CP, SP, EP, GP, PP
-        self.inventory = []
+        self.inventory = {}
 
         self.attacks = []
         self.other_attacks = [] # set of Description
@@ -501,6 +501,13 @@ class Character:
         # Remove final \n
         skill_str = skill_str[:-1]
 
+        inventory_str = ''
+        for k in self.inventory.keys():
+            inventory_str += str(k) + ': ' + str(self.skills[k]) + '\n'
+
+        # Remove final \n
+        skill_str = skill_str[:-1]
+
         # create string
         chara_str = 'Name: {} \
                     \nClass: {} \
@@ -556,7 +563,7 @@ class Character:
                     str([self.other_proficiencies]).replace("'", '').replace('[', '').replace(']', '')
                     , self.currency[0],
                     self.currency[1], self.currency[2], self.currency[3], self.currency[4],
-                    str([self.inventory]).replace("'", '').replace('[', '').replace(']', ''),
+                    inventory_str,
                     str([self.attacks]).replace("'", '').replace('[', '').replace(']', ''),
                     str([self.other_attacks]).replace("'", '').replace('[', '').replace(']', ''),
                     self.initiative_modifier, self.speed, self.hit_dice.sides, self.max_hp, self.current_hp,
