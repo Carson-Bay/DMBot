@@ -195,6 +195,8 @@ async def on_message(ctx):
             await dm_channel.send(output)
             if output != "Character creation has been cancelled.":
                 user_characters[ctx.author.id].character.append(current_character)
+        else:
+            user_characters[ctx.author.id].character.append(current_character)
         return
 
     try:
