@@ -94,7 +94,20 @@ async def character_add_item(ctx: discord.Message, client: discord.Client):
 
 
 async def character_delete(ctx: discord.Message, client: discord.Client):
-    pass
+    args = utils.parse(ctx.content)
+    if len(args) != 3:
+        ctx.channel.send(embed=embedMessage.create("Character error", "Wrong number of arguments", "red"))
+
+    try:
+        characters = user_characters[ctx.author.id]
+    except KeyError:
+        return await ctx.channel.send(embed=embedMessage.create("Character error", "Character not found", "red"))
+
+    for char in characters:
+        if char.name.lower == args[2].lower:
+            user_characters[ctx.author.id].pop(characters.index(char))
+            return await ctx.channel.send(embed=embedMessage.create("Characters", "{} was removed".format(char.name), "blue"))
+    return await ctx.channel.send(embed=embedMessage.create("Character error", "Character not found", "red"))
 
 
 async def character_revive(ctx: discord.Message, client: discord.Client):
