@@ -44,7 +44,7 @@ async def character_command_manager(ctx: discord.Message, client: discord.Client
         return await character_delete(ctx, client)
     elif args[1].lower() == "revive":
         return await character_revive(ctx, client)
-    elif args[1].lower() == "characterlist":
+    elif args[1].lower() == "list":
         return await character_list(ctx, client)
     else:
         return await ctx.channel.send(embed=embedMessage.create("Character", "Not a valid character command", "red"))
