@@ -44,7 +44,7 @@ async def change_prefix(ctx: discord.Message, client: discord.Client):
 async def character_command_manager(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
 
-    if len(args) < 3:
+    if len(args) < 2:
         return await ctx.channel.send(embed=embedMessage.create("Character Error", "Missing arguments", "red"))
 
     if args[1].lower() == "create":
@@ -290,7 +290,7 @@ async def character_list(ctx: discord.Message, client: discord.Client):
 # ----------Combat commands----------
 async def combat_command_manager(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
-    if len(args) < 3:
+    if len(args) < 2:
         return await ctx.channel.send(embed=embedMessage.create("Combat Error", "Missing arguments", "red"))
 
     if args[1].lower() == "start":
@@ -380,7 +380,7 @@ async def end_combat(ctx: discord.Message, client: discord.Client):
 # ----------Session commands----------
 async def session_command_manager(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
-    if len(args) < 3:
+    if len(args) < 2:
         return await ctx.channel.send(embed=embedMessage.create("Session Error", "Missing arguments", "red"))
 
     if args[1].lower() == "start":
