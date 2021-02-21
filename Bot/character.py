@@ -59,20 +59,20 @@ class CharacterCompletion(Enum):
     CURRENCY = 22
     EQUIPMENT = 23
     ATTACKS = 24
-    OTHER_ATTACKS = 24
-    ARMOR_CLASS = 25
-    INITIATIVE = 26
-    SPEED = 27
-    HIT_DICE = 28
-    MAX_HP = 29
-    HP = 30
-    DEATH_SAVES = 31
-    FEATURES = 32
-    PERSONALITY = 33
-    IDEALS = 34
-    BONDS = 35
-    FLAWS = 36
-    FINISH = 37
+    OTHER_ATTACKS = 25
+    ARMOR_CLASS = 26
+    INITIATIVE = 27
+    SPEED = 28
+    HIT_DICE = 29
+    MAX_HP = 30
+    HP = 31
+    DEATH_SAVES = 32
+    FEATURES = 33
+    PERSONALITY = 34
+    IDEALS = 35
+    BONDS = 36
+    FLAWS = 37
+    FINISH = 38
     CANCEL = -1
 
 class Character:
@@ -185,7 +185,7 @@ class Character:
             error_msg = "Your name may not contain newline characters! Try again:"
             change_var = self.set_name
             confirmation_msg = "Your character's name will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
-            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+            return self.check_input(input, current_step, next_msg, default_value, verification, error_msg, change_var, confirmation_msg)
         elif self.creation_progress == CharacterCompletion.NAME:
             current_step = CharacterCompletion.RACE
             next_msg = "What will the class of your character be?"
@@ -193,7 +193,7 @@ class Character:
             error_msg = ""
             change_var = self.set_race
             confirmation_msg = "Your character's race will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
-            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+            return self.check_input(input, current_step, next_msg, default_value, verification, error_msg, change_var, confirmation_msg)
         elif self.creation_progress == CharacterCompletion.RACE:
             current_step = CharacterCompletion.CLASS
             next_msg = "What will the background of your character be?"
@@ -292,7 +292,7 @@ class Character:
             return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
         elif self.creation_progress == CharacterCompletion.OTHER_PROFICIENCIES:
             current_step = CharacterCompletion.CURRENCY
-            next_msg = "Enter the current inventory of the character (separated by commas):"
+            next_msg = "Enter the current inventory of the character, in the format `[item name]: [amount],, [item2 name]: [amount]`:"
             verification = lambda str : re.fullmatch("\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+", str) is not None
             error_msg = "Incorrect format! Make sure it is in [CP] [SP] [EP] [GP] [PP]. Try again:"
             change_var = self.set_currency
@@ -301,7 +301,7 @@ class Character:
         elif self.creation_progress == CharacterCompletion.CURRENCY:
             current_step = CharacterCompletion.EQUIPMENT
             next_msg = "Enter the attacks that the character has, in the format `[name], [atk bonus], [damage], [other descriptions] | [name], [atk bonus], [damage], [other descriptions]` etc.:"
-            verification = lambda str : True
+            verification = lambda str : str == "None" or re.fullmatch("(.+:.+,,)*.+:.+", str) is not None
             error_msg = "Incorrect format! Try again:"
             change_var = self.set_inventory
             confirmation_msg = "Your character's inventory will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
@@ -316,35 +316,131 @@ class Character:
             return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
         elif self.creation_progress == CharacterCompletion.ATTACKS:
             current_step = CharacterCompletion.OTHER_ATTACKS
-            next_msg = "Remaining implementation is unfinished."
+            next_msg = "Enter the armor class of your character:"
             verification = lambda str : str == "None" or re.fullmatch("(.+:.+,,)*.+:.+", str) is not None
             error_msg = "Incorrect format! Try again:"
-            change_var = self.set_other_proficiencies
+            change_var = self.set_other_attacks
             confirmation_msg = "Your character's other attacks will be `{}`, are you sure? (y/yes to confirm, any other input to cancel)"
             return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
         elif self.creation_progress == CharacterCompletion.OTHER_ATTACKS:
-            self.creation_progress = CharacterCompletion.FINISH
-            return "Remaining implementation is unfinished."
+            current_step = CharacterCompletion.ARMOR_CLASS
+            next_msg = "Enter the initiative modifier of your character:"
+            verification = lambda str : re.fullmatch("-?\\d+", str) is not None
+            error_msg = "Input must be an integer! Try again:"
+            change_var = self.set_armor_class
+            confirmation_msg = "Your character's armor class will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
+            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+        elif self.creation_progress == CharacterCompletion.ARMOR_CLASS:
+            current_step = CharacterCompletion.INITIATIVE
+            next_msg = "Enter the speed of your character:"
+            verification = lambda str : re.fullmatch("-?\\d+", str) is not None
+            error_msg = "Input must be an integer! Try again:"
+            change_var = self.set_initiative_modifier
+            confirmation_msg = "Your character's initiative modifier will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
+            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+        elif self.creation_progress == CharacterCompletion.INITIATIVE:
+            current_step = CharacterCompletion.SPEED
+            next_msg = "Enter the amount and values of the hit dice of your character (in the format [#]d[number of sides]):"
+            verification = lambda str : re.fullmatch("-?\\d+", str) is not None
+            error_msg = "Input must be an integer! Try again:"
+            change_var = self.set_speed
+            confirmation_msg = "Your character's speed will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
+            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+        elif self.creation_progress == CharacterCompletion.SPEED:
+            current_step = CharacterCompletion.HIT_DICE
+            next_msg = "Enter the max hitpoints of your character:"
+            verification = lambda str : re.fullmatch("\\d+d\\d+", str) is not None
+            error_msg = "Input must be in the format [#]d[number of sides]! Try again:"
+            change_var = self.set_hit_dice
+            confirmation_msg = "Your character's hit dice will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
+            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+        elif self.creation_progress == CharacterCompletion.HIT_DICE:
+            current_step = CharacterCompletion.MAX_HP
+            next_msg = "Enter the current hitpoints of your character: (if this is a new character, this should be the same as max hp)"
+            verification = lambda str : re.fullmatch("-?\\d+", str) is not None
+            error_msg = "Input must be an integer! Try again:"
+            change_var = self.set_max_hp
+            confirmation_msg = "Your character's max hitpoints will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
+            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+        elif self.creation_progress == CharacterCompletion.MAX_HP:
+            current_step = CharacterCompletion.HP
+            next_msg = "Enter the amount of death saves successful and failed, separated by a space: (if this is a new character, enter `0 0`)"
+            verification = lambda str : re.fullmatch("-?\\d+", str) is not None
+            error_msg = "Input must be an integer! Try again:"
+            change_var = self.set_current_hp
+            confirmation_msg = "Your character's current hitpoints will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
+            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+        elif self.creation_progress == CharacterCompletion.HP:
+            current_step = CharacterCompletion.DEATH_SAVES
+            next_msg = "Enter the features of your character, in the format `[Title1]: [Description1],, [Title2]: [Description2]` and so on: (\"None\" if there are none)"
+            verification = lambda str : re.fullmatch("\\d+\\s+\\d+", str) is not None
+            error_msg = "Input must be two integers separated by a space! Try again:"
+            change_var = self.set_death_saves
+            confirmation_msg = "Your character's death saves count will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
+            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+        elif self.creation_progress == CharacterCompletion.DEATH_SAVES:
+            current_step = CharacterCompletion.FEATURES
+            next_msg = "Describe your character's personality trait:"
+            verification = lambda str : str == "None" or re.fullmatch("(.+:.+,,)*.+:.+", str) is not None
+            error_msg = "Incorrect format! Try again:"
+            change_var = self.set_features
+            confirmation_msg = "Your character's features will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
+            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+        elif self.creation_progress == CharacterCompletion.FEATURES:
+            current_step = CharacterCompletion.PERSONALITY
+            next_msg = "Describe your character's ideals:"
+            verification = lambda str : True
+            error_msg = ""
+            change_var = self.set_personality_trait
+            confirmation_msg = "Your character's personality trait will be:\n{}\nAre you sure? (y/yes to confirm, any other input to cancel)"
+            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+        elif self.creation_progress == CharacterCompletion.PERSONALITY:
+            current_step = CharacterCompletion.IDEALS
+            next_msg = "Describe your character's bonds:"
+            verification = lambda str : True
+            error_msg = ""
+            change_var = self.set_ideals
+            confirmation_msg = "Your character's ideals will be:\n{}\nAre you sure? (y/yes to confirm, any other input to cancel)"
+            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+        elif self.creation_progress == CharacterCompletion.IDEALS:
+            current_step = CharacterCompletion.BONDS
+            next_msg = "Describe your character's flaws:"
+            verification = lambda str : True
+            error_msg = ""
+            change_var = self.set_bonds
+            confirmation_msg = "Your character's bonds will be:\n{}\nAre you sure? (y/yes to confirm, any other input to cancel)"
+            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+        elif self.creation_progress == CharacterCompletion.BONDS:
+            current_step = CharacterCompletion.FLAWS
+            next_msg = "Character complete! Here's your character:\n" + self.__str__() + "\nType any message to confirm and exit this process!"
+            verification = lambda str : True
+            error_msg = ""
+            change_var = self.set_flaws
+            confirmation_msg = "Your character's flaws will be:\n{}\nAre you sure? (y/yes to confirm, any other input to cancel)"
+            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
         elif self.creation_progress == CharacterCompletion.FLAWS:
             self.creation_progress = CharacterCompletion.FINISH
             return "Character complete!"
         else:
             return "An unknown error has occurred."
 
-    def check_input(self, input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg):
+    def check_input(self, input, current_step, next_msg, default_value, verification, error_msg, change_var, confirmation_msg):
         input_lower = input.lower()
         if self.confirmation: # this is the response to the confirmation message
             self.confirmation = False
             if utils.is_positive_input(input_lower):
                 self.creation_progress = current_step
                 self.current_message = next_msg
-            return self.current_message
+                return self.current_message
+            else:
+                self.race = default_value
+                return self.current_message
         else:
             if not verification(input):
                 return error_msg
             change_var(input)
             self.confirmation = True
-            return confirmation_msg.format(input)
+            return confirmation_msg().format(input)
 
     # functions to change variables, to pass to check_input
     def set_name(self, val):
@@ -404,14 +500,23 @@ class Character:
 
     # in the format [proficiency], [proficiency] etc.
     def set_proficiencies(self, val):
+        if val == "None":
+            self.proficiencies = []
+            return
         self.proficiencies = re.split("\\s*,\\s*", val)
 
     # in the format [language], [language] etc.
     def set_languages(self, val):
+        if val == "None":
+            self.languages = []
+            return
         self.languages = re.split("\\s*,\\s*", val)
 
     # in the format [Title]: [Description],, [Title]: [Description] and so on
     def set_other_proficiencies(self, val):
+        if val == "None":
+            self.other_proficiencies = []
+            return
         vals = re.split("\\s*,,\\s*", val)
         for str in vals:
             i = str.index(":")
@@ -421,23 +526,35 @@ class Character:
     def set_currency(self, val):
         self.currency = list(map(lambda str : int(str), re.split(" +", val)))
 
-    # in the format [item], [item] and so on
+    # in the format [item], [item]
     def set_inventory(self, val):
-        self.inventory = re.split("\\s*,\\s*", val)
+        if val == "None":
+            self.inventory = []
+            return
+        vals = re.split("\\s*,,\\s*", val)
+        for str in vals:
+            i = str.index(":")
+            self.inventory[str[:i].strip()] = str[i + 1:].strip()
 
     # in the format [name], [atk bonus], [damage], [other descriptions] | [name], [atk bonus], [damage], [other descriptions] etc.
     def set_attacks(self, val):
+        if val == "None":
+            self.attacks = []
+            return
         vals = re.split("\\s*\\|\\s*", val)
         for atk in vals:
-            components = re.split("\\s*,\\s*", atk)
+            components = re.split(" *, *", atk)
             self.attacks.append(Attack(components[0], int(components[1]), components[2], components[3]))
 
     # in the format [Name]: [Description],, [Name]: [Description] and so on
     def set_other_attacks(self, val):
+        if val == "None":
+            self.other_attacks = []
+            return
         vals = re.split("\\s*,,\\s*", val)
         for str in vals:
             i = str.index(":")
-            self.other_attacks.append(Description(str[:i], str[i + 1:].strip()))
+            self.other_attacks.append(Description(str[:i].strip(), str[i + 1:].strip()))
     
     def set_armor_class(self, val):
         self.armor_class = int(val)
@@ -467,10 +584,13 @@ class Character:
         
     # in the format [Name]: [Description],, [Name]: [Description] and so on
     def set_features(self, val):
+        if val == "None":
+            self.features = []
+            return
         vals = re.split("\\s*,,\\s*", val)
         for str in vals:
             i = str.index(":")
-            self.features.append(Description(str[:i], str[i + 1:].strip()))
+            self.features.append(Description(str[:i].strip(), str[i + 1:].strip()))
 
     def set_personality_trait(self, val):
         self.personality_trait = val
@@ -513,7 +633,6 @@ class Character:
                     \nClass: {} \
                     \nLevel: {}\
                     \nBackground: {}\
-                    \nPlayer Name: {}\
                     \nRace: {}\
                     \nExp: {} \
                     \n\nStrength: {} Mod: {} Save: {}\
@@ -550,7 +669,7 @@ class Character:
                     \nIdeals: {}\
                     \nBonds: {}\
                     \nFlaws: {}' \
-            .format(self.name, self.chara_class, self.level, self.background, self.player_name, self.race,
+            .format(self.name, self.chara_class, self.level, self.background, self.race,
                     self.exp,
                     self.str, self.str_mod, self.str_save, self.dex, self.dex_mod, self.dex_save, self.con,
                     self.con_mod, self.con_save,
