@@ -135,7 +135,7 @@ class Character:
         self.other_proficiencies = [] # set of Description
 
         self.currency = [0, 0, 0, 0, 0] # CP, SP, EP, GP, PP
-        self.inventory = []
+        self.inventory = {}
 
         self.attacks = []
         self.other_attacks = [] # set of Description
@@ -287,7 +287,7 @@ class Character:
             return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
         elif self.creation_progress == CharacterCompletion.OTHER_PROFICIENCIES:
             current_step = CharacterCompletion.CURRENCY
-            next_msg = "Enter the current inventory of the character (separated by commas):"
+            next_msg = "Enter the current inventory of the character, in the format `[item name]: [amount],, [item2 name]: [amount]`:"
             verification = lambda str : re.fullmatch("\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+", str) is not None
             error_msg = "Incorrect format! Make sure it is in [CP] [SP] [EP] [GP] [PP]. Try again:"
             change_var = self.set_currency
@@ -296,7 +296,7 @@ class Character:
         elif self.creation_progress == CharacterCompletion.CURRENCY:
             current_step = CharacterCompletion.EQUIPMENT
             next_msg = "Enter the attacks that the character has, in the format `[name], [atk bonus], [damage], [other descriptions] | [name], [atk bonus], [damage], [other descriptions]` etc.:"
-            verification = lambda str : True
+            verification = lambda str : str == "None" or re.fullmatch("(.+:.+,,)*.+:.+", str) is not None
             error_msg = "Incorrect format! Try again:"
             change_var = self.set_inventory
             confirmation_msg = "Your character's inventory will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
@@ -487,9 +487,6 @@ class Character:
     def set_proficiency_bonus(self, val):
         self.proficiency_bonus = int(val)
 
-    def set_passive_perception(self, val):
-        self.passive_perception = int(val)
-
     # in the format [Acrobatics], [Animal Handling] and so on
     def set_skills(self, val):
         vals = list(map(lambda str : int(str), re.split("\\s*,\\s*", val)))
@@ -529,7 +526,10 @@ class Character:
         if val == "None":
             self.inventory = []
             return
-        self.inventory = re.split("\\s*,\\s*", val)
+        vals = re.split("\\s*,,\\s*", val)
+        for str in vals:
+            i = str.index(":")
+            self.inventory[str[:i].strip()] = str[i + 1:].strip()
 
     # in the format [name], [atk bonus], [damage], [other descriptions] | [name], [atk bonus], [damage], [other descriptions] etc.
     def set_attacks(self, val):
@@ -549,7 +549,7 @@ class Character:
         vals = re.split("\\s*,,\\s*", val)
         for str in vals:
             i = str.index(":")
-            self.other_attacks.append(Description(str[:i], str[i + 1:].strip()))
+            self.other_attacks.append(Description(str[:i].strip(), str[i + 1:].strip()))
     
     def set_armor_class(self, val):
         self.armor_class = int(val)
@@ -585,7 +585,7 @@ class Character:
         vals = re.split("\\s*,,\\s*", val)
         for str in vals:
             i = str.index(":")
-            self.features.append(Description(str[:i], str[i + 1:].strip()))
+            self.features.append(Description(str[:i].strip(), str[i + 1:].strip()))
 
     def set_personality_trait(self, val):
         self.personality_trait = val
