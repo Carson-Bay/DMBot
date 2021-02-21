@@ -31,7 +31,7 @@
 		<h2>Character Management</h2>
 		<ul style="text-align: start;">
 			<li><span class="code">$character create</span> - The bot will DM the sending user and guide them through character creation.</li>
-			<li><span class="code">$character list</span> - The bot will DM the sending user a list of their characters.</li>
+			<li><span class="code">$character list</span> - The bot will DM the user a list of their characters.</li>
 			<li><span class="code">$character show [name]</span> - Shows the specified character sheet.</li>
 			<li><span class="code">$character add [name] &#60;amount=1&#62;</span> - Adds <span class="code">amount</span> of an item/spell to the character's inventory.</li>
 			<li><span class="code">$character delete [name]</span> - Deletes the specified character. WARNING: This cannot be undone.</li>
@@ -42,20 +42,22 @@
 		<ul style="text-align: start;">
 			<li><span class="code">$session start</span> - Starts a play session.</li>
 			<li><span class="code">$session add [name]</span> - Adds the specified character to the current session.</li>
+			<li><span class="code">$session list</span> - Lists all characters in the session.</li>
 			<li><span class="code">$session end</span> - Ends the current session and removes all characters.</li>
 		</ul>
 
 		<h2>Combat Management</h2>
 		<ul style="text-align: start;">
 			<li><span class="code">$combat start</span> - Starts a combat encounter, rolls initiative for all characters in the session, and displays combat turn order.</li>
-			<li><span class="code">$combat damage [name]</span> - Damages the specified character in the session. If that character's HP is zero, the bot notifies that they are dead/knocked out.</li>
+			<li><span class="code">$combat damage [name] [damage]</span> - Damages the specified character in the session.</li>
 			<li><span class="code">$combat end</span> - Ends the current combat encounter.</li>
 		</ul>
 
 		<h2>Utility Commands</h2>
 		<ul style="text-align: start;">
 			<li><span class="code">$roll &#60;amount=1&#62; d[sides]</span> - Rolls <span class="code">amount</span> of dice with the specified number of sides.</li>
-			<li><span class="code">$lookup [monster name]</span> - Looks up the specified monster's stats.</li>
+			<li><span class="code">$lookup monster [name]</span> - Looks up the specified monster's stats.</li>
+			<li><span class="code">$changeprefix [prefix]</span> - Changes the bot's command prefix.</li>
 		</ul>
 	</div>
 

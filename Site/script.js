@@ -15,7 +15,7 @@ function configMobile() {
 
 	const team = document.querySelectorAll("div.person");
 	team.forEach((person) => {
-		person.style.display = "block";
+		person.style.display = "inline";
 	});
 
 	const portraits = document.querySelectorAll("img.portrait");
