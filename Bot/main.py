@@ -183,7 +183,8 @@ async def damage_in_combat(ctx: discord.Message, client: discord.Client):
 
 
 async def end_combat(ctx: discord.Message, client: discord.Client):
-    pass
+    # There's not a whole lot to do here... Combat isn't a persistant state.
+    return await ctx.channel.send("Combat finished.")
 
 
 # ----------Session commands----------
