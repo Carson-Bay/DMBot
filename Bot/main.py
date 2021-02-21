@@ -219,7 +219,7 @@ async def character_delete(ctx: discord.Message, client: discord.Client):
 
     for char in characters:
         if char.name.lower() == args[2].lower():
-            user_characters[ctx.author.id].pop(characters.index(char))
+            user_characters[ctx.author.id].character.pop(characters.index(char))
             return await ctx.channel.send(embed=embedMessage.create("Characters", "{} was removed".format(char.name), "blue"))
     return await ctx.channel.send(embed=embedMessage.create("Character error", "Character not found", "red"))
 
