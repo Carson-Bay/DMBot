@@ -32,8 +32,6 @@ async def character_command_manager(ctx: discord.Message, client: discord.Client
 
     if args[1] == "create":
         return await create_character(ctx, client)
-    elif args[1] == "list":
-        return await list_characters(ctx, client)
     elif args[1] == "show":
         return await show_character(ctx, client)
     elif args[1] == "add":
@@ -63,30 +61,7 @@ async def create_character(ctx: discord.Message, client: discord.Client):
         pickle.dump(user_characters, file)
 
 
-async def list_characters(ctx: discord.Message, client: discord.Client):
-    guild_id = ctx.guild.id
 
-    args = utils.parse(ctx.content)
-
-    try:
-        if sessions[guild_id] is None:
-            return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
-    except KeyError:
-        return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
-
-    else:
-        # Add all the characters ot the str
-        message = ''
-
-        for c in sessions[guild_id].characters:
-            message += str(c) + '\n\n'
-
-        # remove the final \n\n
-        message = message[:-2]
-
-        ctx.channel.send(embed=embedMessage.create('Characters in Session', message, 'blue'))
-
-    pass
 
 
 async def show_character(ctx: discord.Message, client: discord.Client):
@@ -154,6 +129,8 @@ async def session_command_manager(ctx: discord.Message, client: discord.Client):
         return await end_session(ctx, client)
     elif args[1] == "add":
         return await add_to_session(ctx, client)
+    elif args[1] == "listcharacters":
+        return await list_characters(ctx, client)
     else:
         return await ctx.channel.send(embed=embedMessage.create("Session", "Not valid session command", "red"))
 
@@ -176,8 +153,6 @@ async def add_to_session(ctx: discord.Message, client: discord.Client):
     guild_id = ctx.guild.id
     user_id = ctx.author.id
     args = utils.parse(ctx.content)
-
-
 
     try:
         if sessions[guild_id] is None:
@@ -211,6 +186,30 @@ async def end_session(ctx: discord.Message, client: discord.Client):
 
     sessions[guild_id] = None
     return await ctx.channel.send(embed=embedMessage.create("Session", "Your session has concluded", "blue"))
+
+
+async def list_characters(ctx: discord.Message, client: discord.Client):
+    guild_id = ctx.guild.id
+
+    args = utils.parse(ctx.content)
+
+    try:
+        if sessions[guild_id] is None:
+            return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+    except KeyError:
+        return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+
+    else:
+        # Add all the characters ot the str
+        message = ''
+
+        for c in sessions[guild_id].characters:
+            message += str(c) + '\n\n'
+
+        # remove the final \n\n
+        message = message[:-2]
+
+        ctx.channel.send(embed=embedMessage.create('Characters in Session', message, 'blue'))
 
 
 # ----------Lookup Functions----------
