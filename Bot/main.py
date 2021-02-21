@@ -65,6 +65,8 @@ async def create_character(ctx: discord.Message, client: discord.Client):
 
 
 async def show_character(ctx: discord.Message, client: discord.Client):
+
+    # Show a single character sheet based off its name
     user_id = ctx.author.id
     args = utils.parse(ctx.content)
     try:
@@ -76,7 +78,7 @@ async def show_character(ctx: discord.Message, client: discord.Client):
         #check if user has this character
         message = ''
         for c in user_characters[user_id].characters:
-            if c.name == args[2]:
+            if c.name.lower() == args[2].lower():
                 message = str(c)
         if len(message) == 0:
             await ctx.channel.send(
@@ -150,6 +152,8 @@ async def start_session(ctx: discord.Message, client: discord.Client):
 
 async def add_to_session(ctx: discord.Message, client: discord.Client):
 
+    #add character to session
+
     guild_id = ctx.guild.id
     user_id = ctx.author.id
     args = utils.parse(ctx.content)
@@ -189,6 +193,9 @@ async def end_session(ctx: discord.Message, client: discord.Client):
 
 
 async def list_characters(ctx: discord.Message, client: discord.Client):
+
+    # Uses session dict to find all the characters in the session and shows each character sheet one after the other
+
     guild_id = ctx.guild.id
 
     args = utils.parse(ctx.content)
