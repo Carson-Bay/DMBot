@@ -241,16 +241,15 @@ async def character_revive(ctx: discord.Message, client: discord.Client):
     character = None
 
     for c in sessions[guild_id].characters:
-        for k in user_characters[user_id].character:
-            if c.name.lower() == k.name.lower():
-                character = c
-                break
+        if c.name.lower() == args[2].lower():
+            character = c
+            break
 
     if character is None:
         return await ctx.channel.send(
             embed=embedMessage.create('Characters in Session', 'User does not have character in session', 'red'))
 
-    character.temp_hp = character.max_hp
+    character.current_hp = character.max_hp
 
     await ctx.channel.send(
         embed=embedMessage.create('Character revived', character.name + ' was revived', 'blue'))
