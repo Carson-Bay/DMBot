@@ -213,8 +213,6 @@ async def character_delete(ctx: discord.Message, client: discord.Client):
     return await ctx.channel.send(embed=embedMessage.create("Character error", "Character not found", "red"))
 
 
-# TODO -------------------------------------------------------------------------
-
 async def character_revive(ctx: discord.Message, client: discord.Client):
     # Only work with character in session
     # This function does not revive user_characters character, only in session character
@@ -245,9 +243,6 @@ async def character_revive(ctx: discord.Message, client: discord.Client):
 
     await ctx.channel.send(
         embed=embedMessage.create('Character revived', character.name + ' was revived', 'blue'))
-
-
-
 
 
 async def character_list(ctx: discord.Message, client: discord.Client):
