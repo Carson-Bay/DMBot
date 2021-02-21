@@ -12,14 +12,16 @@ class Attack:
         self.descriptions = descriptions
 
     def __str__(self):
-
-        pass
+        return "**{}:** Atk Bonus +{}, Damage {} - {}".format(self.name, self.atk_bonus, self.damage, self.descriptions)
 
 class Description:
     
     def __init__(self, title, description):
         self.title = title
         self.description = description
+
+    def __str__(self):
+        return "**{}:** {}".format(self.title, self.description)
 
 class Dice:
 
@@ -437,7 +439,7 @@ class Character:
                 return error_msg
             change_var(input)
             self.confirmation = True
-            return confirmation_msg().format(input)
+            return confirmation_msg.format(input)
 
     # functions to change variables, to pass to check_input
     def set_name(self, val):
@@ -531,7 +533,7 @@ class Character:
         vals = re.split("\\s*,,\\s*", val)
         for str in vals:
             i = str.index(":")
-            self.inventory[str[:i].strip()] = str[i + 1:].strip()
+            self.inventory[str[:i].strip()] = int(str[i + 1:].strip())
 
     # in the format [name], [atk bonus], [damage], [other descriptions] | [name], [atk bonus], [damage], [other descriptions] etc.
     def set_attacks(self, val):
@@ -626,41 +628,23 @@ class Character:
         skill_str = skill_str[:-1]
 
         # create string
-        chara_str = 'Name: {} \
-                    \nClass: {} \
-                    \nLevel: {}\
-                    \nBackground: {}\
-                    \nRace: {}\
-                    \nExp: {} \
-                    \n\nStrength: {} Mod: {} Save: {}\
-                    \nDexterity: {} Mod: {} Save: {}\
-                    \nConstitution: {} Mod: {} Save: {}\
-                    \nIntelligence: {} Mod: {} Save: {}\
-                    \nWisdom: {} Mod: {} Save: {}\
-                    \nCharisma: {} Mod: {} Save: {}\
-                    \n\nInspiration: {}\
-                    \nProficiency Bonus: {}\
-                    \nPassive Perception: {}\
+        chara_str = 'Name: {}  Class: {}  Level: {}  Background: {}  Race: {}  Exp: {} \
+                    \n\nStrength: {} Mod: {} Save: {}  Dexterity: {} Mod: {} Save: {}\
+                    \nConstitution: {} Mod: {} Save: {}  Intelligence: {} Mod: {} Save: {}\
+                    \nWisdom: {} Mod: {} Save: {}  Charisma: {} Mod: {} Save: {}\
+                    \n\nInspiration: {}  Proficiency Bonus: {}  Passive Perception: {}\
                     \nSkills: {}\
                     \n\nLanguages:  {}\
-                    \nProficiencies: {}\
-                    \nOther Proficiencies: {} \
-                    \n\nCurrency: \
-                    \nCP: {}\
-                    \nSP: {}\
-                    \nEP: {}\
-                    \nGP: {}\
-                    \nPP: {} \
+                    \nProficiencies: {}  Other Proficiencies: {} \
+                    \n\nCurrency: CP: {}  SP: {}  EP: {}  GP: {}  PP: {} \
                     \n\nInventory: {}\
                     \nAttacks: {}\
                     \nOther Attacks: {}\
                     \n\nInitiative Modifier: {}\
                     \nSpeed: {}\
                     \nHit Dice: {}\
-                    \nMax HP: {}\
-                    \nCurrent HP: {}\
-                    \nDeath Save Successes: {}\
-                    \nDeath Save Failures: {}\
+                    \nMax HP: {} Current HP: {}\
+                    \nDeath Save Successes: {}  Death Save Failures: {}\
                     \n\nFeatures: {}\
                     \n\nPersonality Trait: {}\
                     \nIdeals: {}\

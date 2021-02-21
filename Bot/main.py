@@ -11,6 +11,7 @@ __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 
+
 # ----------Persistent data commands----------
 async def change_prefix(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
@@ -514,6 +515,8 @@ async def monster_lookup(ctx: discord.Message, client: discord.Client):
                                                                                  "*You may need to put quotes around monster name*".format(
             args[2]), "red"))
 
+async def help_command(ctx: discord.Message, client: discord.Client):
+    await ctx.channel.send(embed=embedMessage.create(('Go to website to see available commands', ' https://dungeonmaster.tech/documentation.html', 'green')))
 
 # Dictionary of commands
 commands = {
@@ -523,7 +526,8 @@ commands = {
     "session": session_command_manager,
     "combat": combat_command_manager,
     "roll": dice.roll_dice,
-    "lookup": lookup_command_manager
+    "lookup": lookup_command_manager,
+    "help": help_command
 }
 
 # Initializations
