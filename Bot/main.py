@@ -19,6 +19,7 @@ async def change_prefix(ctx: discord.Message, client: discord.Client):
         return await ctx.channel.send("Prefix is not valid")
 
     else:
+        prefixes = {}
         try:
             with open(os.path.join(__location__, "prefix.pickle"), "rb") as file:
                 prefixes = pickle.load(file)
