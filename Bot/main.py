@@ -6,8 +6,8 @@ from classes import Guild, User, Session
 from character import Character, CharacterCompletion
 from commands import embedMessage, ping, utils, dice
 
-FILE_DIR = os.path.dirname(os.path.abspath(__file__))
-PARENT_DIR = os.path.join(FILE_DIR, os.pardir)
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 
 # ----------Persistent data commands----------
@@ -21,12 +21,12 @@ async def change_prefix(ctx: discord.Message, client: discord.Client):
     else:
         guilds[ctx.guild.id].change_prefix(args[1])
         prefixes[ctx.guild.id] = args[1]
-        with open(os.path.join(PARENT_DIR, "prefix.pickle"), 'wb') as file:
+        with open(os.path.join(__location__, "prefix.pickle"), 'wb') as file:
             pickle.dump(prefixes, file)
 
         return await ctx.channel.send("Prefix has been changed to {}".format(args[1]))
 
-
+# ----------character commands----------
 async def character_command_manager(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
 
@@ -34,6 +34,8 @@ async def character_command_manager(ctx: discord.Message, client: discord.Client
         return await create_character(ctx, client)
     elif args[1] == "list":
         return await list_characters(ctx, client)
+    elif args[1] == "show":
+        return await show_character(ctx, client)
     elif args[1] == "add":
         return await character_add_item(ctx, client)
     elif args[1] == "delete":
@@ -41,8 +43,7 @@ async def character_command_manager(ctx: discord.Message, client: discord.Client
     elif args[1] == "revive":
         return await character_revive(ctx, client)
     else:
-        return await ctx.channel.send(embed=embedMessage.create("Character", "Not valid character command", "red"))
-
+        return await ctx.channel.send(embed=embedMessage.create("Character", "Not a valid character command", "red"))
 
 
 async def create_character(ctx: discord.Message, client: discord.Client):
@@ -58,12 +59,57 @@ async def create_character(ctx: discord.Message, client: discord.Client):
 
     user_characters[ctx.author.id].add_char_sheet(new_character)
 
-    with open(os.path.join(PARENT_DIR, "characters.pickle"), "wb") as file:
+    with open(os.path.join(__location__, "characters.pickle"), "wb") as file:
         pickle.dump(user_characters, file)
 
 
 async def list_characters(ctx: discord.Message, client: discord.Client):
+    guild_id = ctx.guild.id
+
+    args = utils.parse(ctx.content)
+
+    try:
+        if sessions[guild_id] is None:
+            return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+    except KeyError:
+        return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+
+    else:
+        # Add all the characters ot the str
+        message = ''
+
+        for c in sessions[guild_id].characters:
+            message += str(c) + '\n\n'
+
+        # remove the final \n\n
+        message = message[:-2]
+
+        ctx.channel.send(embed=embedMessage.create('Characters in Session', message, 'blue'))
+
     pass
+
+
+async def show_character(ctx: discord.Message, client: discord.Client):
+    user_id = ctx.author.id
+    args = utils.parse(ctx.content)
+    try:
+        if user_characters[user_id] is None:
+            return await ctx.channel.send(embed=embedMessage.create("You have no characters to show", "Make one using $character create", "red"))
+    except KeyError:
+        return await ctx.channel.send(embed=embedMessage.create("You have no characters to show", "Make one using $character create", "red"))
+    else:
+        #check if user has this character
+        message = ''
+        for c in user_characters[user_id].characters:
+            if c.name == args[2]:
+                message = str(c)
+        if len(message) == 0:
+            await ctx.channel.send(
+                ctx.channel.send(embed=embedMessage.create('you do not have this character', 'Try making it using $character create', 'red')))
+        else:
+            ctx.channel.send(embed=embedMessage.create('Character Sheet', message,  'blue'))
+
+
 
 
 async def character_add_item(ctx: discord.Message, client: discord.Client):
@@ -78,8 +124,7 @@ async def character_revive(ctx: discord.Message, client: discord.Client):
     pass
 
 
-
-
+# ----------Combat commands----------
 async def combat_command_manager(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
 
@@ -88,7 +133,7 @@ async def combat_command_manager(ctx: discord.Message, client: discord.Client):
     elif args[1] == "damage":
         return await damage_in_combat(ctx, client)
     else:
-        return await ctx.channel.send(embed=embedMessage.create("Combat", "Not valid combat command", "red"))
+        return await ctx.channel.send(embed=embedMessage.create("Combat", "Not a valid combat command", "red"))
 
 
 async def start_combat(ctx: discord.Message, client: discord.Client):
@@ -98,14 +143,17 @@ async def start_combat(ctx: discord.Message, client: discord.Client):
 async def damage_in_combat(ctx: discord.Message, client: discord.Client):
     pass
 
+
 # ----------Session commands----------
-async def session_manager(ctx: discord.Message, client: discord.Client):
+async def session_command_manager(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
 
     if args[1] == "start":
         return await start_session(ctx, client)
     elif args[1] == "end":
         return await end_session(ctx, client)
+    elif args[1] == "add":
+        return await add_to_session(ctx, client)
     else:
         return await ctx.channel.send(embed=embedMessage.create("Session", "Not valid session command", "red"))
 
@@ -123,6 +171,36 @@ async def start_session(ctx: discord.Message, client: discord.Client):
     return await ctx.channel.send(embed=embedMessage.create("Session", "Your session has begun", "blue"))
 
 
+async def add_to_session(ctx: discord.Message, client: discord.Client):
+
+    guild_id = ctx.guild.id
+    user_id = ctx.author.id
+    args = utils.parse(ctx.content)
+
+
+
+    try:
+        if sessions[guild_id] is None:
+            return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+    except KeyError:
+        return await ctx.channel.send(embed=embedMessage.create("Session", "You don't have a session in progress", "red"))
+
+        if user_characters[user_id] is None:
+            return await ctx.channel.send(embed=embedMessage.create("You have no characters to show", "Make one using $character create", "red"))
+    except KeyError:
+        return await ctx.channel.send(embed=embedMessage.create("You have no characters to show", "Make one using $character create", "red"))
+    # check if user has that character
+    character = None
+    for c in user_characters[user_id].characters:
+        if c.name == args[2]:
+            character = c
+    if character is None:
+        await ctx.channel.send(embed=embedMessage.create('you do not have this character', 'Try making it using $character create','red'))
+    else:
+        sessions[guild_id].characters.append(character)
+        ctx.channel.send(embed=embedMessage.create('Session', 'Character Added', 'blue'))
+
+
 async def end_session(ctx: discord.Message, client: discord.Client):
     guild_id = ctx.guild.id
     try:
@@ -136,7 +214,7 @@ async def end_session(ctx: discord.Message, client: discord.Client):
 
 
 # ----------Lookup Functions----------
-async def lookup(ctx: discord.Message, client: discord.Client):
+async def lookup_command_manager(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
     if len(args) != 3 and len(args) != 2:
         return await ctx.channel.send(embed=embedMessage.create("Lookup Error", "Missing arguments", "red"))
@@ -155,7 +233,7 @@ async def monster_lookup(ctx: discord.Message, client: discord.Client):
 
     # Load monsters
     try:
-        with open(os.path.join(PARENT_DIR, "monsters.pickle"), "rb") as file:
+        with open(os.path.join(__location__, "monsters.pickle"), "rb") as file:
             monsters = pickle.load(file)
     except FileNotFoundError:
         print("Monster file not found")
@@ -187,10 +265,10 @@ async def monster_lookup(ctx: discord.Message, client: discord.Client):
 commands = {
     "ping": ping.ping,
     "changeprefix": change_prefix,
-    "createcharacter": create_character,
-    "session": session_manager,
+    "character": character_command_manager,
+    "session": session_command_manager,
     "roll": dice.roll_dice,
-    "lookup": lookup
+    "lookup": lookup_command_manager
 }
 
 # Initializations
@@ -210,21 +288,21 @@ async def on_ready():
 
     # Load prefix preferences
     try:
-        with open(os.path.join(PARENT_DIR, "prefix.pickle"), "rb") as file:
+        with open(os.path.join(__location__, "prefix.pickle"), "rb") as file:
             prefixes = pickle.load(file)
     except FileNotFoundError:
         print("Prefix file not found")
 
     # Load User Characters
     try:
-        with open(os.path.join(PARENT_DIR, "characters.pickle"), "rb") as file:
+        with open(os.path.join(__location__, "characters.pickle"), "rb") as file:
             user_characters = pickle.load(file)
     except FileNotFoundError:
         print("Character file not found")
 
     # Load monsters
     try:
-        with open(os.path.join(PARENT_DIR, "monsters.pickle"), "rb") as file:
+        with open(os.path.join(__location__, "monsters.pickle"), "rb") as file:
             monsters = pickle.load(file)
     except FileNotFoundError:
         print("Monster file not found")
