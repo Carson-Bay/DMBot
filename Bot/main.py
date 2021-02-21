@@ -44,7 +44,7 @@ async def character_command_manager(ctx: discord.Message, client: discord.Client
         return await character_delete(ctx, client)
     elif args[1].lower() == "revive":
         return await character_revive(ctx, client)
-    elif args[1].lower() == "characterlist":
+    elif args[1].lower() == "list":
         return await character_list(ctx, client)
     else:
         return await ctx.channel.send(embed=embedMessage.create("Character", "Not a valid character command", "red"))
@@ -85,7 +85,7 @@ async def show_character(ctx: discord.Message, client: discord.Client):
     else:
         # Check if user has this character
         message = ''
-        for c in user_characters[user_id].characters:
+        for c in user_characters[user_id].character:
             if c.name.lower() == args[2].lower():
                 message = str(c)
         if len(message) == 0:
@@ -265,7 +265,7 @@ async def character_list(ctx: discord.Message, client: discord.Client):
         # Add all the characters ot the str
         message = ''
 
-        for c in user_characters[user_id].characters:
+        for c in user_characters[user_id].character:
             message += c.name + ', '
 
         # remove the final ,
@@ -429,7 +429,7 @@ async def add_to_session(ctx: discord.Message, client: discord.Client):
             embed=embedMessage.create("You have no characters to show", "Make one using $character create", "red"))
     # check if user has that character
     character = None
-    for c in user_characters[user_id].characters:
+    for c in user_characters[user_id].character:
         if c.name.lower() == args[2].lower():
             character = c
     if character is None:
