@@ -203,6 +203,14 @@ class Character:
             verification = lambda str : True # TODO verification
             error_msg = ""
             change_var = self.set_class
+            confirmation_msg = "Your character's class will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
+            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
+        elif self.creation_progress == CharacterCompletion.CLASS:
+            current_step = CharacterCompletion.BACKGROUND
+            next_msg = "What will the alignment of your character be?"
+            verification = lambda str : True # TODO verification
+            error_msg = ""
+            change_var = self.set_background
             confirmation_msg = "Your character's background will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
             return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
         elif self.creation_progress == CharacterCompletion.BACKGROUND:
