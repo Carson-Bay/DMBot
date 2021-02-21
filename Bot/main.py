@@ -40,6 +40,8 @@ async def character_command_manager(ctx: discord.Message, client: discord.Client
         return await character_delete(ctx, client)
     elif args[1] == "revive":
         return await character_revive(ctx, client)
+    elif args[1] == "characterlist":
+        return await character_list(ctx, client)
     else:
         return await ctx.channel.send(embed=embedMessage.create("Character", "Not a valid character command", "red"))
 
@@ -87,6 +89,32 @@ async def show_character(ctx: discord.Message, client: discord.Client):
             ctx.channel.send(embed=embedMessage.create('Character Sheet', message,  'blue'))
 
 
+async def character_list(ctx: discord.Message, client: discord.Client):
+
+    # Show list of names of a user's characters
+
+    user_id = ctx.author.id
+
+    args = utils.parse(ctx.content)
+
+    try:
+        if user_characters[user_id] is None:
+            return await ctx.channel.send(embed=embedMessage.create("You don't have any characters to show", "Try creating one with $character create", "red"))
+    except KeyError:
+        return await ctx.channel.send(embed=embedMessage.create("You don't have any characters to show", "Try creating one with $character create", "red"))
+
+    else:
+        # Add all the characters ot the str
+        message = ''
+
+        for c in user_characters[user_id].characters:
+            message += c.name + ', '
+
+        # remove the final ,
+        message = message[:-2]
+
+        ctx.channel.send(embed=embedMessage.create("User's Characters", message, 'blue'))
+
 
 
 async def character_add_item(ctx: discord.Message, client: discord.Client):
@@ -131,8 +159,8 @@ async def session_command_manager(ctx: discord.Message, client: discord.Client):
         return await end_session(ctx, client)
     elif args[1] == "add":
         return await add_to_session(ctx, client)
-    elif args[1] == "listcharacters":
-        return await list_characters(ctx, client)
+    elif args[1] == "session_list":
+        return await session_list(ctx, client)
     else:
         return await ctx.channel.send(embed=embedMessage.create("Session", "Not valid session command", "red"))
 
@@ -192,9 +220,9 @@ async def end_session(ctx: discord.Message, client: discord.Client):
     return await ctx.channel.send(embed=embedMessage.create("Session", "Your session has concluded", "blue"))
 
 
-async def list_characters(ctx: discord.Message, client: discord.Client):
+async def session_list(ctx: discord.Message, client: discord.Client):
 
-    # Uses session dict to find all the characters in the session and shows each character sheet one after the other
+    # Uses session dict to find all the characters in the session and shows each character name one after the other
 
     guild_id = ctx.guild.id
 
@@ -211,9 +239,9 @@ async def list_characters(ctx: discord.Message, client: discord.Client):
         message = ''
 
         for c in sessions[guild_id].characters:
-            message += str(c) + '\n\n'
+            message += c.name + ', '
 
-        # remove the final \n\n
+        # remove the final ,
         message = message[:-2]
 
         ctx.channel.send(embed=embedMessage.create('Characters in Session', message, 'blue'))
