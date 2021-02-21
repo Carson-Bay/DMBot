@@ -337,11 +337,11 @@ async def damage_in_combat(ctx: discord.Message, client: discord.Client):
         return await ctx.channel.send("There are no characters in the session.")
     
     args = utils.parse(ctx.content)
-    if len(args) != 3:
+    if len(args) != 4:
         return await ctx.channel.send("Error parsing arguments. Usage: combat damage [name] [damage].\nTip: Use quotes for a character name containing spaces.")
     
-    name = args[1]
-    dmg = args[2]
+    name = args[2]
+    dmg = args[3]
     if dmg.isnumeric():
         dmg = int(dmg)
     else:
@@ -370,7 +370,7 @@ async def session_command_manager(ctx: discord.Message, client: discord.Client):
         return await end_session(ctx, client)
     elif args[1].lower() == "add":
         return await add_to_session(ctx, client)
-    elif args[1].lower() == "session_list":
+    elif args[1].lower() == "list":
         return await session_list(ctx, client)
     else:
         return await ctx.channel.send(embed=embedMessage.create("Session", "Not valid session command", "red"))
@@ -462,7 +462,7 @@ async def session_list(ctx: discord.Message, client: discord.Client):
     # Remove the final
     message = message[:-2]
 
-    ctx.channel.send(embed=embedMessage.create('Characters in Session', message, 'blue'))
+    return await ctx.channel.send(embed=embedMessage.create('Characters in Session', message, 'blue'))
 
 
 # ----------Lookup Functions----------
@@ -513,8 +513,9 @@ async def monster_lookup(ctx: discord.Message, client: discord.Client):
                                                                                  "*You may need to put quotes around monster name*".format(
             args[2]), "red"))
 
+
 async def help_command(ctx: discord.Message, client: discord.Client):
-    await ctx.channel.send(embed=embedMessage.create(('Go to website to see available commands', ' https://dungeonmaster.tech/documentation.html', 'green')))
+    await ctx.channel.send(embed=embedMessage.create('Go to website to see available commands', ' https://dungeonmaster.tech/documentation.html', 'green'))
 
 # Dictionary of commands
 commands = {
