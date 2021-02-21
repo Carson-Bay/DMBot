@@ -487,9 +487,17 @@ class Character:
 
         #Hit_dice = hit_dice.sides in str so hit_dice must not be none
 
-        #Is death save successs/fail supposed to be printed like that
+        #Is death save successes/fail supposed to be printed like that
 
+        #Create str for skills to incldue keys and values
+        skill_str = ''
+        for k in self.skills.keys():
+            skill_str += str(k) + ': ' + str(self.skills[k]) + '\n'
 
+        # Remove final \n
+        skill_str = skill_str[:-1]
+
+        # create string
         chara_str = 'Name: {} \
                     \nClass: {} \
                     \nLevel: {}\
@@ -506,6 +514,7 @@ class Character:
                     \n\nInspiration: {}\
                     \nProficiency Bonus: {}\
                     \nPassive Perception: {}\
+                    \nSkills: {}\
                     \n\nLanguages:  {}\
                     \nProficiencies: {}\
                     \nOther Proficiencies: {} \
@@ -537,17 +546,19 @@ class Character:
                     self.int, self.int_mod, self.int_save, self.wis, self.wis_mod, self.wis_save, self.cha,
                     self.cha_mod, self.cha_save,
                     self.inspiration, self.proficiency_bonus, self.passive_perception,
-                    str([*self.languages.values()]).replace("'", '').replace('[', '').replace(']', ''),
-                    str([*self.proficiencies.values()]).replace("'", '').replace('[', '').replace(']', ''),
-                    str([*self.other_proficiencies.values()]).replace("'", '').replace('[', '').replace(']', '')
+                    skill_str,
+                    str([self.languages]).replace("'", '').replace('[', '').replace(']', ''),
+                    str([self.proficiencies]).replace("'", '').replace('[', '').replace(']', ''),
+                    str([self.other_proficiencies]).replace("'", '').replace('[', '').replace(']', '')
                     , self.currency[0],
                     self.currency[1], self.currency[2], self.currency[3], self.currency[4],
-                    str([*self.inventory.values()]).replace("'", '').replace('[', '').replace(']', ''),
-                    str([*self.attacks.values()]).replace("'", '').replace('[', '').replace(']', ''),
-                    str([*self.other_attacks.values()]).replace("'", '').replace('[', '').replace(']', ''),
+                    str([self.inventory]).replace("'", '').replace('[', '').replace(']', ''),
+                    str([self.attacks]).replace("'", '').replace('[', '').replace(']', ''),
+                    str([self.other_attacks]).replace("'", '').replace('[', '').replace(']', ''),
                     self.initiative_modifier, self.speed, self.hit_dice.sides, self.max_hp, self.current_hp,
                     self.death_save_success, self.death_save_failure,
-                    str([*self.features.values()]).replace("'", '').replace('[', '').replace(']', ''),
+                    str([self.features]).replace("'", '').replace('[', '').replace(']', ''),
                     self.personality_trait, self.ideals, self.bonds, self.flaws)
 
         return chara_str
+
