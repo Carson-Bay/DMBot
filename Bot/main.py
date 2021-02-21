@@ -6,8 +6,8 @@ from classes import Guild, User, Session
 from character import Character, CharacterCompletion
 from commands import embedMessage, ping, utils, dice
 
-FILE_DIR = os.path.dirname(os.path.abspath(__file__))
-PARENT_DIR = os.path.join(FILE_DIR, os.pardir)
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 
 # ----------Persistent data commands----------
@@ -21,7 +21,7 @@ async def change_prefix(ctx: discord.Message, client: discord.Client):
     else:
         guilds[ctx.guild.id].change_prefix(args[1])
         prefixes[ctx.guild.id] = args[1]
-        with open(os.path.join(PARENT_DIR, "prefix.pickle"), 'wb') as file:
+        with open(os.path.join(__location__, "prefix.pickle"), 'wb') as file:
             pickle.dump(prefixes, file)
 
         return await ctx.channel.send("Prefix has been changed to {}".format(args[1]))
@@ -44,7 +44,6 @@ async def character_command_manager(ctx: discord.Message, client: discord.Client
         return await ctx.channel.send(embed=embedMessage.create("Character", "Not valid character command", "red"))
 
 
-
 async def create_character(ctx: discord.Message, client: discord.Client):
     dm_channel = await ctx.author.create_dm()
     if ctx.author.id not in user_characters:
@@ -58,7 +57,7 @@ async def create_character(ctx: discord.Message, client: discord.Client):
 
     user_characters[ctx.author.id].add_char_sheet(new_character)
 
-    with open(os.path.join(PARENT_DIR, "characters.pickle"), "wb") as file:
+    with open(os.path.join(__location__, "characters.pickle"), "wb") as file:
         pickle.dump(user_characters, file)
 
 
@@ -78,8 +77,7 @@ async def character_revive(ctx: discord.Message, client: discord.Client):
     pass
 
 
-
-
+# ----------Combat commands----------
 async def combat_command_manager(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
 
@@ -97,6 +95,7 @@ async def start_combat(ctx: discord.Message, client: discord.Client):
 
 async def damage_in_combat(ctx: discord.Message, client: discord.Client):
     pass
+
 
 # ----------Session commands----------
 async def session_manager(ctx: discord.Message, client: discord.Client):
@@ -155,7 +154,7 @@ async def monster_lookup(ctx: discord.Message, client: discord.Client):
 
     # Load monsters
     try:
-        with open(os.path.join(PARENT_DIR, "monsters.pickle"), "rb") as file:
+        with open(os.path.join(__location__, "monsters.pickle"), "rb") as file:
             monsters = pickle.load(file)
     except FileNotFoundError:
         print("Monster file not found")
@@ -210,21 +209,21 @@ async def on_ready():
 
     # Load prefix preferences
     try:
-        with open(os.path.join(PARENT_DIR, "prefix.pickle"), "rb") as file:
+        with open(os.path.join(__location__, "prefix.pickle"), "rb") as file:
             prefixes = pickle.load(file)
     except FileNotFoundError:
         print("Prefix file not found")
 
     # Load User Characters
     try:
-        with open(os.path.join(PARENT_DIR, "characters.pickle"), "rb") as file:
+        with open(os.path.join(__location__, "characters.pickle"), "rb") as file:
             user_characters = pickle.load(file)
     except FileNotFoundError:
         print("Character file not found")
 
     # Load monsters
     try:
-        with open(os.path.join(PARENT_DIR, "monsters.pickle"), "rb") as file:
+        with open(os.path.join(__location__, "monsters.pickle"), "rb") as file:
             monsters = pickle.load(file)
     except FileNotFoundError:
         print("Monster file not found")
