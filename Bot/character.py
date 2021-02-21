@@ -185,7 +185,7 @@ class Character:
             error_msg = "Your name may not contain newline characters! Try again:"
             change_var = self.set_name
             confirmation_msg = "Your character's name will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
-            return self.check_input(input, current_step, next_msg, default_value, verification, error_msg, change_var, confirmation_msg)
+            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
         elif self.creation_progress == CharacterCompletion.NAME:
             current_step = CharacterCompletion.RACE
             next_msg = "What will the class of your character be?"
@@ -193,7 +193,7 @@ class Character:
             error_msg = ""
             change_var = self.set_race
             confirmation_msg = "Your character's race will be {}, are you sure? (y/yes to confirm, any other input to cancel)"
-            return self.check_input(input, current_step, next_msg, default_value, verification, error_msg, change_var, confirmation_msg)
+            return self.check_input(input, current_step, next_msg, verification, error_msg, change_var, confirmation_msg)
         elif self.creation_progress == CharacterCompletion.RACE:
             current_step = CharacterCompletion.CLASS
             next_msg = "What will the background of your character be?"
