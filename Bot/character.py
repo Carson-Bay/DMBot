@@ -10,7 +10,7 @@ class Attack:
         self.other_descriptions = descriptions
 
     def __str__(self):
-        # TODO
+
         pass
 
 class Description:
@@ -189,4 +189,48 @@ class Character:
 
     def __str__(self):
         # Character sheet
-        pass
+
+        #Hit_dice = hit_dice.sides in str so hit_dice must not be non
+        #Might want to change how dicts are printed
+        #Is death save successs/fail supposed to be printed like that
+
+
+        chara_str = '''Name: {}\nClass: {}\nLevel: {}\nBackground: {}\nPlayer Name: {}\nRace: {}\nExp: {} 
+                    \n\nStrength: {} Mod: {} Save: {}\nDexterity: {} Mod: {} Save: {}\nConstitution: {} Mod: {} Save: {}\nIntelligence: {} Mod: {} Save: {}\nWisdom: {} Mod: {} Save: {}\nCharisma: {} Mod: {} Save: {}
+            \n\nInspiration: {}\nProficiency Bonus: {}\nPassive Perception: {}\n\nLanguages:  {}\nProficiencies: {}\nOther Proficiencies: {} 
+            \n\nCurrency:\nCP: {}\nSP: {}\nEP: {}\nGP: {}\nPP: {} 
+            \n\nInventory: {}\nAttacks: {}\nOther Attacks: {}\n 
+            \n\nInitiative Modifier: {}\nSpeed: {}\nHit Dice: {}\nMax HP: {}\nCurrent HP: {}\nDeath Save Successes: {}\nDeath Save Failures: {}
+            \n\nFeatures: {}
+            \n\nPersonality Trait: {}\nIdeals: {}\nBonds: {}\nFlaws: {}''' \
+            .format(self.name, self.chara_class, self.level, self.background, self.player_name, self.race,
+                    self.exp,
+                    self.str, self.str_mod, self.str_save, self.dex, self.dex_mod, self.dex_save, self.con,
+                    self.con_mod, self.con_save,
+                    self.int, self.int_mod, self.int_save, self.wis, self.wis_mod, self.wis_save, self.cha,
+                    self.cha_mod, self.cha_save,
+                    self.inspiration, self.proficiency_bonus, self.passive_perception,
+                    str([*self.languages.values()]).replace("'", '').replace('[', '').replace(']', ''),
+                    str([*self.proficiencies.values()]).replace("'", '').replace('[', '').replace(']', ''),
+                    str([*self.other_proficiencies.values()]).replace("'", '').replace('[', '').replace(']', '')
+                    , self.currency[0],
+                    self.currency[1], self.currency[2], self.currency[3], self.currency[4],
+                    str([*self.inventory.values()]).replace("'", '').replace('[', '').replace(']', ''),
+                    str([*self.attacks.values()]).replace("'", '').replace('[', '').replace(']', ''),
+                    str([*self.other_attacks.values()]).replace("'", '').replace('[', '').replace(']', ''),
+                    self.initiative_modifier, self.speed, self.hit_dice.sides, self.max_hp, self.current_hp,
+                    self.death_save_success, self.death_save_failure,
+                    str([*self.features.values()]).replace("'", '').replace('[', '').replace(']', ''),
+                    self.personality_trait, self.ideals, self.bonds, self.flaws)
+
+        return chara_str
+
+
+if __name__ == '__main__':
+    c = Character()
+    c.hit_dice = Dice(1, 2)
+    c.features['beans'] = 'burger'
+    c.features['slurp'] = 'schlorp'
+    c.languages['slurp'] = 'schlorp'
+    c.languages['gchgccc'] = 'schlorp'
+    print(str(c))
