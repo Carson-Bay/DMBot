@@ -19,6 +19,18 @@ async def change_prefix(ctx: discord.Message, client: discord.Client):
         return await ctx.channel.send("Prefix is not valid")
 
     else:
+        try:
+            with open(os.path.join(__location__, "prefix.pickle"), "rb") as file:
+                prefixes = pickle.load(file)
+        except FileNotFoundError:
+            print("Prefix file not found")
+        for guild in client.guilds:
+            try:
+                prefix = prefixes[guild.id]
+            except KeyError:
+                prefix = default_prefix
+            guilds[guild.id] = Guild(guild.id, prefix)
+
         guilds[ctx.guild.id].change_prefix(args[1])
         prefixes[ctx.guild.id] = args[1]
         with open(os.path.join(__location__, "prefix.pickle"), 'wb') as file:
@@ -206,7 +218,7 @@ async def character_delete(ctx: discord.Message, client: discord.Client):
         return await ctx.channel.send(embed=embedMessage.create("Character error", "Character not found", "red"))
 
     for char in characters:
-        if char.name.lower == args[2].lower:
+        if char.name.lower() == args[2].lower():
             user_characters[ctx.author.id].pop(characters.index(char))
             return await ctx.channel.send(embed=embedMessage.create("Characters", "{} was removed".format(char.name), "blue"))
     return await ctx.channel.send(embed=embedMessage.create("Character error", "Character not found", "red"))
