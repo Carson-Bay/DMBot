@@ -628,41 +628,23 @@ class Character:
         skill_str = skill_str[:-1]
 
         # create string
-        chara_str = 'Name: {} \
-                    \nClass: {} \
-                    \nLevel: {}\
-                    \nBackground: {}\
-                    \nRace: {}\
-                    \nExp: {} \
-                    \n\nStrength: {} Mod: {} Save: {}\
-                    \nDexterity: {} Mod: {} Save: {}\
-                    \nConstitution: {} Mod: {} Save: {}\
-                    \nIntelligence: {} Mod: {} Save: {}\
-                    \nWisdom: {} Mod: {} Save: {}\
-                    \nCharisma: {} Mod: {} Save: {}\
-                    \n\nInspiration: {}\
-                    \nProficiency Bonus: {}\
-                    \nPassive Perception: {}\
+        chara_str = 'Name: {}  Class: {}  Level: {}  Background: {}  Race: {}  Exp: {} \
+                    \n\nStrength: {} Mod: {} Save: {}  Dexterity: {} Mod: {} Save: {}\
+                    \nConstitution: {} Mod: {} Save: {}  Intelligence: {} Mod: {} Save: {}\
+                    \nWisdom: {} Mod: {} Save: {}  Charisma: {} Mod: {} Save: {}\
+                    \n\nInspiration: {}  Proficiency Bonus: {}  Passive Perception: {}\
                     \nSkills: {}\
                     \n\nLanguages:  {}\
-                    \nProficiencies: {}\
-                    \nOther Proficiencies: {} \
-                    \n\nCurrency: \
-                    \nCP: {}\
-                    \nSP: {}\
-                    \nEP: {}\
-                    \nGP: {}\
-                    \nPP: {} \
+                    \nProficiencies: {}  Other Proficiencies: {} \
+                    \n\nCurrency: CP: {}  SP: {}  EP: {}  GP: {}  PP: {} \
                     \n\nInventory: {}\
                     \nAttacks: {}\
                     \nOther Attacks: {}\
                     \n\nInitiative Modifier: {}\
                     \nSpeed: {}\
                     \nHit Dice: {}\
-                    \nMax HP: {}\
-                    \nCurrent HP: {}\
-                    \nDeath Save Successes: {}\
-                    \nDeath Save Failures: {}\
+                    \nMax HP: {} Current HP: {}\
+                    \nDeath Save Successes: {}  Death Save Failures: {}\
                     \n\nFeatures: {}\
                     \n\nPersonality Trait: {}\
                     \nIdeals: {}\
