@@ -622,7 +622,7 @@ class Character:
 
         inventory_str = ''
         for k in self.inventory.keys():
-            inventory_str += str(k) + ': ' + str(self.skills[k]) + '\n'
+            inventory_str += str(k) + ': ' + str(self.inventory[k]) + '\n'
 
         # Remove final \n
         skill_str = skill_str[:-1]
