@@ -13,10 +13,10 @@ class Guild:
 class User:
     def __init__(self, user_id, char_sheet: list):
         self.id = user_id
-        self.characters = char_sheet
+        self.character = char_sheet
 
     def add_char_sheet(self, sheet):
-        self.characters.append(sheet)
+        self.character.append(sheet)
 
 
 class Session:

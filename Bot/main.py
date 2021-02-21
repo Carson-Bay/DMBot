@@ -98,7 +98,7 @@ async def damage_in_combat(ctx: discord.Message, client: discord.Client):
 
 
 # ----------Session commands----------
-async def session_manager(ctx: discord.Message, client: discord.Client):
+async def session_command_manager(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
 
     if args[1] == "start":
@@ -135,7 +135,7 @@ async def end_session(ctx: discord.Message, client: discord.Client):
 
 
 # ----------Lookup Functions----------
-async def lookup(ctx: discord.Message, client: discord.Client):
+async def lookup_command_manager(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
     if len(args) != 3 and len(args) != 2:
         return await ctx.channel.send(embed=embedMessage.create("Lookup Error", "Missing arguments", "red"))
@@ -186,10 +186,10 @@ async def monster_lookup(ctx: discord.Message, client: discord.Client):
 commands = {
     "ping": ping.ping,
     "changeprefix": change_prefix,
-    "createcharacter": create_character,
-    "session": session_manager,
+    "character": character_command_manager,
+    "session": session_command_manager,
     "roll": dice.roll_dice,
-    "lookup": lookup
+    "lookup": lookup_command_manager
 }
 
 # Initializations
