@@ -179,7 +179,38 @@ async def start_combat(ctx: discord.Message, client: discord.Client):
 
 
 async def damage_in_combat(ctx: discord.Message, client: discord.Client):
-    pass
+    gid = ctx.guild.id
+
+    session = None
+    try:
+        session = sessions[gid]
+    except KeyError:
+        return await ctx.channel.send("A session has not been started. One must be started to deal combat damage.")
+
+    if session == None:
+        return await ctx.channel.send("A session has not been started. One must be started to deal combat damage.")
+    
+    characters = session.characters
+    if characters == None or len(characters) == 0:
+        return await ctx.channel.send("There are no characters in the session.")
+    
+    args = utils.parse(ctx.content)
+    if len(args) != 3:
+        return await ctx.channel.send("Error parsing arguments. Usage: combat damage [name] [damage].\nTip: Use quotes for a character name containing spaces.")
+    
+    name = args[1]
+    dmg = args[2]
+    if not dmg.isnumeric():
+        dmg = int(dmg)
+    else:
+        return await ctx.channel.send("Damage must be a number.")
+
+    for char in characters:
+        if char.name == name:
+            char.current_hp = char.current_hp - dmg
+            return await ctx.channel.send("{name} took {damage} damage, and now has {hp} hit points.".format(name = char.name, damage = dmg, hp = char.current_hp))
+    
+    return await ctx.channel.send("There are no characters with that name.")
 
 
 async def end_combat(ctx: discord.Message, client: discord.Client):
