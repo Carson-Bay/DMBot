@@ -11,7 +11,6 @@ __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 
-
 # ----------Persistent data commands----------
 async def change_prefix(ctx: discord.Message, client: discord.Client):
     args = utils.parse(ctx.content)
@@ -89,12 +88,11 @@ async def show_character(ctx: discord.Message, client: discord.Client):
             if c.name.lower() == args[2].lower():
                 message = str(c)
         if len(message) == 0:
-            await ctx.channel.send(
-                ctx.channel.send(
+            return await ctx.channel.send(
                     embed=embedMessage.create('you do not have this character', 'Try making it using $character create',
-                                              'red')))
+                                              'red'))
         else:
-            ctx.channel.send(embed=embedMessage.create('Character Sheet', message, 'blue'))
+            return await ctx.channel.send(embed=embedMessage.create('Character Sheet', message, 'blue'))
 
 
 async def character_add_item(ctx: discord.Message, client: discord.Client):
@@ -140,7 +138,7 @@ async def character_add_item(ctx: discord.Message, client: discord.Client):
     except KeyError:
         character.inventory[item] = amount
 
-    await ctx.channel.send(embed=embedMessage.create('Item Added', '', 'blue'))
+    return await ctx.channel.send(embed=embedMessage.create('Item Added', '', 'blue'))
 
 
 async def character_del_item(ctx: discord.Message, client: discord.Client):
@@ -271,7 +269,7 @@ async def character_list(ctx: discord.Message, client: discord.Client):
         # remove the final ,
         message = message[:-2]
 
-        ctx.channel.send(embed=embedMessage.create("User's Characters", message, 'blue'))
+        return await ctx.channel.send(embed=embedMessage.create("User's Characters", message, 'blue'))
 
 
 # ----------Combat commands----------
