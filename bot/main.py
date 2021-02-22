@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import commands
 from state import State
 from args import parse_args
+from embeds import create_embed
 
 COMMANDS = {
 	"echo": commands.echo
@@ -43,7 +44,7 @@ async def on_message(message):
 		await command(args[1:], message, state)
 	except KeyError:
 		channel = message.channel
-		return await channel.send("Command does not exist.")
+		return await channel.send(embed = create_embed("Error", "Command does not exist.", "red"))
 
 if __name__ == "__main__":
 	main()
