@@ -10,12 +10,13 @@ def parse_args(args):
 		index = args.find('"', index + 1)
 
 		chunk = args[prev:index].replace('"', '')
-		if inner:
+		if inner and chunk:
 			parsed.append(chunk)
 		else:
 			split = re.split("\s", chunk.strip())
 			for s in split:
-				parsed.append(s)
+				if s:
+					parsed.append(s)
 		
 		inner = not inner
 		if index < 0:
@@ -38,5 +39,9 @@ if __name__ == "__main__":
 	print(s)
 
 	s = 'And yet another " error.'
+	s = parse_args(s)
+	print(s)
+
+	s = 'This "should be fine."'
 	s = parse_args(s)
 	print(s)
