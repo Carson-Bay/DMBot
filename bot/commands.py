@@ -79,4 +79,5 @@ async def change_prefix(args, context, state):
 
 async def help(args, context, state):
 	channel = context.channel
-	return await channel.send("Received help command with args {0}".format(args))
+	# We don't care about the arguments.
+	return await channel.send(embed=create_embed("Help", "http://dungeonmaster.tech/documentation.html", "orange"))
