@@ -58,7 +58,7 @@ async def roll(args, context, state):
 	for i in range(1, len(rolls)):
 		mrolls += ", {0}".format(rolls[i])
 
-	message = "You rolled {0}".format(mrolls)
+	message = "You rolled {0}\nSum: {1}".format(mrolls, sum(rolls))
 	return await channel.send(embed = create_embed("Roll", message, "blue"))
 
 
