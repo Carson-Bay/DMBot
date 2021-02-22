@@ -35,11 +35,12 @@ async def on_message(message):
 	if not content.startswith(prefix):
 		return # Make sure the prefix matches
 
-	args = parse_args(message.content)
+	content = content[len(prefix):] # Remove prefix from content
+	args = parse_args(content)
 	try:
-		command = args[0]
+		command = args[0].lower()
 		command = COMMANDS[command]
-		command(args[1:], message, state)
+		await command(args[1:], message, state)
 	except KeyError:
 		channel = message.channel
 		return await channel.send("Command does not exist.")
