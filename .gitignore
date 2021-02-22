@@ -2,14 +2,7 @@
 /shelf/
 
 # Token Files
-/Bot/.env
-
-# Test pickle
-prefix.pickle
-
-# Data
-monsters.txt
-
+.env
 
 # IDE specific files
 /.idea/
