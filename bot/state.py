@@ -7,6 +7,7 @@ class State:
 	
 	def set_prefix(self, guild, prefix):
 		self.prefixes[guild] = prefix
+		# TODO: Save prefixes
 	
 	def get_prefix(self, guild):
 		try:
