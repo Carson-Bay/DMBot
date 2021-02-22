@@ -8,14 +8,17 @@ def parse_args(args):
 	while index < len(args):
 		prev = index
 		index = args.find('"', index + 1)
-
-		chunk = args[prev:index].replace('"', '')
-		if inner and chunk:
-			parsed.append(chunk)
+		chunk = args[prev:index]
+		if index < 0:
+			chunk = args[prev:]
+		
+		if inner:
+			chunk = chunk[1:]
+			if chunk: # Ensure chunk is not empty
+				parsed.append(chunk)
 		else:
-			split = re.split("\s", chunk.strip())
-			for s in split:
-				if s:
+			for s in re.split("\s", chunk.strip().replace('"', '')):
+				if s: # Ensure s is not empty
 					parsed.append(s)
 		
 		inner = not inner
