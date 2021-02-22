@@ -8,7 +8,14 @@ from args import parse_args
 from embeds import create_error
 
 COMMANDS = {
-	"echo": commands.echo
+	"echo": commands.echo,
+	"character": commands.character,
+	"session": commands.session,
+	"combat": commands.combat,
+	"lookup": commands.lookup,
+	"roll": commands.roll,
+	"changeprefix": commands.change_prefix,
+	"help": commands.help
 }
 
 client = discord.Client()
