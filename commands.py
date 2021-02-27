@@ -1,5 +1,6 @@
 import random
 from embeds import create_error, create_embed
+from commands import lookup
 
 async def echo(args, context, state):
 	channel = context.channel
@@ -22,8 +23,15 @@ async def combat(args, context, state):
 	return await channel.send("Received combat command with args {0}".format(args))
 
 async def lookup(args, context, state):
-	channel = context.channel
-	return await channel.send("Received lookup command with args {0}".format(args))
+	COMMANDS = {
+		"monster": lookup.monster
+	}
+
+	try:
+		command = COMMANDS[args[0]]
+		command(args[1:], context, state)
+	except KeyError:
+		context.channel.send(embed = create_error("Command {0} does not exist."))
 
 async def roll(args, context, state):
 	ARGUMENT_ERROR = "Improper arguments. Usage: roll <amount=1> d[sides]"
