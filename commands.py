@@ -29,9 +29,9 @@ async def lookup(args, context, state):
 
 	try:
 		command = COMMANDS[args[0]]
-		command(args[1:], context, state)
+		return await command(args[1:], context, state)
 	except KeyError:
-		context.channel.send(embed = create_error("Command {0} does not exist."))
+		return await context.channel.send(embed = create_error("Command {0} does not exist."))
 
 async def roll(args, context, state):
 	ARGUMENT_ERROR = "Improper arguments. Usage: roll <amount=1> d[sides]"
