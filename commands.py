@@ -1,6 +1,7 @@
 import random
 from embeds import create_error, create_embed
 from commands_mod import lookup as lookup_commands
+from commands_mod import character as character_commands
 
 async def echo(args, context, state):
 	channel = context.channel
@@ -11,8 +12,22 @@ async def echo(args, context, state):
 	return await channel.send(message)
 
 async def character(args, context, state):
-	channel = context.channel
-	return await channel.send("Received character command with args {0}".format(args))
+	COMMANDS = {
+		"create": character_commands.create,
+		"list": character_commands.list,
+		"show": character_commands.show,
+		"delete": character_commands.delete,
+		"revive": character_commands.revive,
+	}
+
+	if len(args) < 1:
+		return await context.channel.send(embed=create_error("A sub-command must be specified."))
+
+	try:
+		command = COMMANDS[args[0]]
+		return await command(args[1:], context, state)
+	except KeyError:
+		return await context.channel.send(embed=create_error("Command {0} does not exist.".format(args[0])))
 
 async def session(args, context, state):
 	channel = context.channel
