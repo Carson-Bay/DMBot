@@ -1,6 +1,6 @@
 import random
 from embeds import create_error, create_embed
-from commands import lookup
+from commands_mod import lookup as lookup_commands
 
 async def echo(args, context, state):
 	channel = context.channel
@@ -24,14 +24,17 @@ async def combat(args, context, state):
 
 async def lookup(args, context, state):
 	COMMANDS = {
-		"monster": lookup.monster
+		"monster": lookup_commands.monster
 	}
+
+	if len(args) < 1:
+		return await context.channel.send(embed = create_error("A sub-command must be specified."))
 
 	try:
 		command = COMMANDS[args[0]]
 		return await command(args[1:], context, state)
 	except KeyError:
-		return await context.channel.send(embed = create_error("Command {0} does not exist."))
+		return await context.channel.send(embed = create_error("Command {0} does not exist.".format(args[0])))
 
 async def roll(args, context, state):
 	ARGUMENT_ERROR = "Improper arguments. Usage: roll <amount=1> d[sides]"
