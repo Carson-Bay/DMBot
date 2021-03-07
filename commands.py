@@ -3,6 +3,7 @@ from embeds import create_error, create_embed
 from commands_mod import lookup as lookup_commands
 from commands_mod import character as character_commands
 from commands_mod import session as session_commands
+from commands_mod import combat as combat_commands
 
 async def echo(args, context, state):
 	channel = context.channel
@@ -48,8 +49,20 @@ async def session(args, context, state):
 		return await context.channel.send(embed=create_error("Command {0} does not exist.".format(args[0])))
 
 async def combat(args, context, state):
-	channel = context.channel
-	return await channel.send("Received combat command with args {0}".format(args))
+	COMMANDS = {
+		"start": combat_commands.start,
+		"damage": combat_commands.damage,
+		"end": combat_commands.end,
+	}
+
+	if len(args) < 1:
+		return await context.channel.send(embed=create_error("A sub-command must be specified."))
+
+	try:
+		command = COMMANDS[args[0]]
+		return await command(args[1:], context, state)
+	except KeyError:
+		return await context.channel.send(embed=create_error("Command {0} does not exist.".format(args[0])))
 
 async def lookup(args, context, state):
 	COMMANDS = {
