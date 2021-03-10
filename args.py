@@ -26,25 +26,3 @@ def parse_args(args):
 			break
 
 	return parsed
-
-if __name__ == "__main__":
-	# TEST
-	s = 'This is a "test. The stuff in quotes" should not get split.'
-	s = parse_args(s)
-	print(s)
-
-	s = 'This is another "test. It should probably result in some error.'
-	s = parse_args(s)
-	print(s)
-
-	s = 'This should also error!"'
-	s = parse_args(s)
-	print(s)
-
-	s = 'And yet another " error.'
-	s = parse_args(s)
-	print(s)
-
-	s = 'This "should be fine."'
-	s = parse_args(s)
-	print(s)
