@@ -2,7 +2,7 @@ import discord
 import os
 from dotenv import load_dotenv
 
-import commands
+import command_handlers as commands
 from state import State
 from args import parse_args
 from embeds import create_error

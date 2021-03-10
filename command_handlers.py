@@ -1,9 +1,9 @@
 import random
 from embeds import create_error, create_embed
-from commands_mod import lookup as lookup_commands
-from commands_mod import character as character_commands
-from commands_mod import session as session_commands
-from commands_mod import combat as combat_commands
+from commands import lookup as lookup_commands
+from commands import character as character_commands
+from commands import session as session_commands
+from commands import combat as combat_commands
 
 async def echo(args, context, state):
 	channel = context.channel
