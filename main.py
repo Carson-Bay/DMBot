@@ -38,7 +38,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
 	if message.author == client.user:
-		return # Don't respond to messages sent by ourselves
+		return # Don't respond to messages sent by the bot itself
 
 	content = message.content
 	prefix = state.get_prefix(message.guild)
