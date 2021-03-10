@@ -3,6 +3,8 @@ import os
 from dotenv import load_dotenv
 
 import command_handlers as commands
+from commands import roll
+from commands import change_prefix
 from state import State
 from args import parse_args
 from embeds import create_error
@@ -13,8 +15,8 @@ COMMANDS = {
 	"session": commands.session,
 	"combat": commands.combat,
 	"lookup": commands.lookup,
-	"roll": commands.roll,
-	"changeprefix": commands.change_prefix,
+	"roll": roll.roll,
+	"changeprefix": change_prefix.change_prefix,
 	"help": commands.help
 }
 
