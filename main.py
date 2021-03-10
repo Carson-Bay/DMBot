@@ -3,8 +3,7 @@ import os
 from dotenv import load_dotenv
 
 import command_handlers as commands
-from commands import roll
-from commands import change_prefix
+from commands import roll, change_prefix
 from state import State
 from args import parse_args
 from embeds import create_error
