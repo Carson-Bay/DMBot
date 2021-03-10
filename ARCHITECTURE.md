@@ -21,6 +21,8 @@ Also contains all top-level commands.
 
 ### [state.py](../state.py)
 Manages bot state.
+Handles prefixes, characters, session, etc. etc.
+Includes getters and setters as well as utility functions.
 
 ## Folders
 ### [commands](../commands/)
