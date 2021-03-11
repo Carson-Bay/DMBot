@@ -10,3 +10,6 @@
 *.iml
 *.pyc
 /.vs/
+
+# Bot save data
+*.json
